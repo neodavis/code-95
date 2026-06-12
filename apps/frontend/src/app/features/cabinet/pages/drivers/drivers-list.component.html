@@ -1,0 +1,59 @@
+<lib-page-header [title]="'page.drivers' | translate">
+  <a routerLink="/cabinet/drivers/create" class="btn btn-primary btn-sm">
+    {{ 'action.add' | translate }}
+  </a>
+</lib-page-header>
+
+<lib-data-table
+  [items]="items()"
+  [loading]="loading()"
+  [currentPage]="currentPage()"
+  [totalPages]="totalPages()"
+  [sortColumn]="sortColumn()"
+  [sortOrder]="sortOrder()"
+  (sortChange)="toggleSort($event)"
+  (searchChange)="onSearchInput($event)"
+  (pageChange)="loadPage($event)"
+>
+  <ng-template libColumn="pip" header="table.pip" let-item>
+    <a
+      [routerLink]="['/cabinet/drivers', item.id]"
+      class="link-simple link-simple_primary"
+    >
+      {{ item.surname }} {{ item.firstName }} {{ item.middleName }}
+    </a>
+  </ng-template>
+  <ng-template
+    libColumn="dateOfBirth"
+    header="table.dob"
+    [sortable]="true"
+    let-item
+  >
+    {{
+      item.dateOfBirth
+        ? (item.dateOfBirth | date: 'dd.MM.yyyy')
+        : ('common.not_specified' | translate)
+    }}
+  </ng-template>
+  <ng-template
+    libColumn="taxNumber"
+    header="table.tax_number"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.taxNumber }}
+  </ng-template>
+  <ng-template
+    libColumn="phone"
+    header="table.phone"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.phone ?? ('common.not_specified' | translate) }}
+  </ng-template>
+  <ng-template libColumn="actions" header="table.actions" let-item>
+    <a [routerLink]="['/cabinet/drivers', item.id, 'edit']" class="link-simple">
+      {{ 'action.edit' | translate }}
+    </a>
+  </ng-template>
+</lib-data-table>

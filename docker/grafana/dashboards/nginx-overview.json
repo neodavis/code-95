@@ -1,0 +1,99 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "title": "Requests per Second",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "rate(nginx_http_requests_total{job=\"nginx\"}[5m])",
+          "legendFormat": "req/s"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "reqps" }
+      }
+    },
+    {
+      "title": "Active Connections",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "nginx_connections_active{job=\"nginx\"}",
+          "legendFormat": "active"
+        },
+        {
+          "expr": "nginx_connections_reading{job=\"nginx\"}",
+          "legendFormat": "reading"
+        },
+        {
+          "expr": "nginx_connections_writing{job=\"nginx\"}",
+          "legendFormat": "writing"
+        },
+        {
+          "expr": "nginx_connections_waiting{job=\"nginx\"}",
+          "legendFormat": "waiting"
+        }
+      ]
+    },
+    {
+      "title": "Total Connections Accepted vs Handled",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "rate(nginx_connections_accepted{job=\"nginx\"}[5m])",
+          "legendFormat": "accepted/s"
+        },
+        {
+          "expr": "rate(nginx_connections_handled{job=\"nginx\"}[5m])",
+          "legendFormat": "handled/s"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "connps" }
+      }
+    },
+    {
+      "title": "Nginx Up",
+      "type": "stat",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "nginx_up{job=\"nginx\"}",
+          "legendFormat": "nginx"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "DOWN", "color": "red" },
+                "1": { "text": "UP", "color": "green" }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["nginx", "code-95"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "title": "Nginx Overview",
+  "uid": "nginx-overview"
+}

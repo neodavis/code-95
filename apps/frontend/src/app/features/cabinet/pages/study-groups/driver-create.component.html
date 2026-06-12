@@ -1,0 +1,7 @@
+<lib-page-header [title]="'cabinet.add_new_driver' | translate">
+  <a [routerLink]="['/cabinet/study-groups', groupId]" class="link-simple">
+    {{ 'action.cancel' | translate }}
+  </a>
+</lib-page-header>
+
+<app-driver-form mode="addToGroup" [groupId]="groupId" />

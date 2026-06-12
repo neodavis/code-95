@@ -1,0 +1,314 @@
+<lib-page-header [title]="'cabinet.generate_spk' | translate">
+  <a [routerLink]="['/cabinet/study-groups', groupId]" class="link-simple">
+    {{ 'action.cancel' | translate }}
+  </a>
+</lib-page-header>
+
+@if (loading()) {
+  <p>{{ 'common.loading' | translate }}</p>
+} @else {
+  <p class="mg-b-20">{{ 'spk.confirm_subtitle' | translate }}</p>
+
+  <!-- Drivers table: SPK# | ПІБ | Phone | Email -->
+  <div class="overflow-x-auto mg-b-24">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>{{ 'table.spk' | translate }}</th>
+        <th>{{ 'table.pip' | translate }}</th>
+        <th>{{ 'table.contact_phone' | translate }}</th>
+        <th>{{ 'table.email_address' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (d of displayedDrivers(); track d.driverId) {
+        <tr>
+          <td>{{ d.spkNo ?? '—' }}</td>
+          <td>
+            <a
+              [routerLink]="['/cabinet/drivers', d.driverId]"
+              class="link-simple"
+            >
+              {{ d.surname }} {{ d.firstName }} {{ d.middleName }}
+            </a>
+          </td>
+          <td>{{ d.phone ?? '—' }}</td>
+          <td>{{ d.email ?? '—' }}</td>
+        </tr>
+      } @empty {
+        <tr>
+          <td colspan="4" class="table__empty">
+            {{ 'common.no_records' | translate }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  </div>
+
+  @if (displayedPending().length) {
+    <form (submit)="$event.preventDefault(); submit()">
+      <!-- Row: TC name | TC cert no (readonly) -->
+      <div class="form-grid-2 mg-b-0">
+        <div class="e-form-group">
+          <label class="e-form-group__label">{{
+            'spk.tc_name_label' | translate
+          }}</label>
+          <input
+            class="e-form-group__input"
+            type="text"
+            [value]="group()?.tcName ?? ''"
+            readonly
+          />
+        </div>
+        <div class="e-form-group">
+          <label class="e-form-group__label">{{
+            'spk.tc_cert_no_label' | translate
+          }}</label>
+          <input
+            class="e-form-group__input"
+            type="text"
+            [value]="group()?.tcCertNo ?? ''"
+            readonly
+          />
+        </div>
+      </div>
+
+      <!-- Row: 4 ministry constants (readonly) -->
+      @if (constants(); as c) {
+        <div class="form-grid-4 mg-b-0">
+          <div class="e-form-group">
+            <label class="e-form-group__label">{{
+              'spk.date_miniinfra' | translate
+            }}</label>
+            <input
+              class="e-form-group__input"
+              type="text"
+              [value]="c.dateOfMiniinfra | date: 'dd.MM.yyyy'"
+              readonly
+            />
+          </div>
+          <div class="e-form-group">
+            <label class="e-form-group__label">{{
+              'spk.miniinfra_no' | translate
+            }}</label>
+            <input
+              class="e-form-group__input"
+              type="text"
+              [value]="c.miniinfraNo"
+              readonly
+            />
+          </div>
+          <div class="e-form-group">
+            <label class="e-form-group__label">{{
+              'spk.date_minjust' | translate
+            }}</label>
+            <input
+              class="e-form-group__input"
+              type="text"
+              [value]="c.dateOfMinjust | date: 'dd.MM.yyyy'"
+              readonly
+            />
+          </div>
+          <div class="e-form-group">
+            <label class="e-form-group__label">{{
+              'spk.minjust_no' | translate
+            }}</label>
+            <input
+              class="e-form-group__input"
+              type="text"
+              [value]="c.minjustNo"
+              readonly
+            />
+          </div>
+        </div>
+      }
+
+      <!-- Row: date of test | carry type -->
+      <div class="form-grid-2 mg-b-0">
+        <div class="e-form-group">
+          <label class="e-form-group__label"
+            >{{ 'form.date_of_test' | translate }} *</label
+          >
+          <input
+            class="e-form-group__input"
+            [class.e-form-group__input--invalid]="
+              form.controls.dateOfTest.touched &&
+              form.controls.dateOfTest.invalid
+            "
+            type="date"
+            [formControl]="form.controls.dateOfTest"
+            placeholder="дд.мм.рррр"
+          />
+          @if (
+            form.controls.dateOfTest.touched && form.controls.dateOfTest.invalid
+          ) {
+            <span class="e-form-group__error">{{
+              form.controls.dateOfTest.errors | fieldError
+            }}</span>
+          }
+        </div>
+        <div class="e-form-group">
+          <label class="e-form-group__label"
+            >{{ 'form.carry_type' | translate }} *</label
+          >
+          <!-- Carry type is fixed by the study group (Django parity:
+               readonly carry_type_txt); free choice only without a group one. -->
+          @if (group()?.carryTypeId) {
+            <input
+              class="e-form-group__input"
+              type="text"
+              [value]="group()?.carryTypeName ?? ''"
+              readonly
+            />
+          } @else {
+            <select
+              class="e-form-group__input"
+              [formControl]="form.controls.carryTypeId"
+            >
+              <option [ngValue]="null">—</option>
+              @for (ct of carryTypes(); track ct.id) {
+                <option [ngValue]="ct.id">{{ ct.name }}</option>
+              }
+            </select>
+          }
+        </div>
+      </div>
+
+      <!-- Row: date of test protocol | protocol no -->
+      <div class="form-grid-2 mg-b-0">
+        <div class="e-form-group">
+          <label class="e-form-group__label"
+            >{{ 'form.date_of_test_protocol' | translate }} *</label
+          >
+          <input
+            class="e-form-group__input"
+            [class.e-form-group__input--invalid]="
+              form.controls.dateOfTestProtocol.touched &&
+              form.controls.dateOfTestProtocol.invalid
+            "
+            type="date"
+            [formControl]="form.controls.dateOfTestProtocol"
+            placeholder="дд.мм.рррр"
+          />
+          @if (
+            form.controls.dateOfTestProtocol.touched &&
+            form.controls.dateOfTestProtocol.invalid
+          ) {
+            <span class="e-form-group__error">{{
+              form.controls.dateOfTestProtocol.errors | fieldError
+            }}</span>
+          }
+        </div>
+        <div class="e-form-group">
+          <label class="e-form-group__label"
+            >{{ 'form.test_protocol_no' | translate }} *</label
+          >
+          <input
+            class="e-form-group__input"
+            [class.e-form-group__input--invalid]="
+              form.controls.testProtocolNo.touched &&
+              form.controls.testProtocolNo.invalid
+            "
+            type="text"
+            [formControl]="form.controls.testProtocolNo"
+            placeholder="00-0000"
+          />
+          @if (
+            form.controls.testProtocolNo.touched &&
+            form.controls.testProtocolNo.invalid
+          ) {
+            <span class="e-form-group__error">{{
+              form.controls.testProtocolNo.errors | fieldError
+            }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- Row: date of expiry | position | chief pip -->
+      <div class="form-grid-3 mg-b-0">
+        <div class="e-form-group">
+          <label class="e-form-group__label"
+            >{{ 'form.date_of_expiry' | translate }} *</label
+          >
+          <input
+            class="e-form-group__input"
+            type="date"
+            [formControl]="form.controls.dateOfExpiry"
+            readonly
+          />
+          <small class="text-muted">{{
+            'spk.expiry_derived_hint' | translate
+          }}</small>
+        </div>
+        <div class="e-form-group">
+          <label class="e-form-group__label"
+            >{{ 'spk.position' | translate }} *</label
+          >
+          <input
+            class="e-form-group__input"
+            [class.e-form-group__input--invalid]="
+              form.controls.position.touched && form.controls.position.invalid
+            "
+            type="text"
+            [formControl]="form.controls.position"
+            placeholder="Директор"
+          />
+          @if (
+            form.controls.position.touched && form.controls.position.invalid
+          ) {
+            <span class="e-form-group__error">{{
+              form.controls.position.errors | fieldError
+            }}</span>
+          }
+        </div>
+        <div class="e-form-group">
+          <label class="e-form-group__label"
+            >{{ 'spk.chief_pip' | translate }} *</label
+          >
+          <input
+            class="e-form-group__input"
+            [class.e-form-group__input--invalid]="
+              form.controls.chiefPip.touched && form.controls.chiefPip.invalid
+            "
+            type="text"
+            [formControl]="form.controls.chiefPip"
+            placeholder="Прізвище Ім'я По-батькові"
+          />
+          @if (
+            form.controls.chiefPip.touched && form.controls.chiefPip.invalid
+          ) {
+            <span class="e-form-group__error">{{
+              form.controls.chiefPip.errors | fieldError
+            }}</span>
+          }
+        </div>
+      </div>
+
+      @if (error()) {
+        <p class="text-danger mg-b-10">{{ error() }}</p>
+      }
+
+      @if (results().length) {
+        <div class="mg-b-15">
+          @for (r of results(); track r.driverId) {
+            <p [class]="r.error ? 'text-danger' : 'text-success'">
+              {{ r.driverPip }}:
+              @if (r.error) {
+                {{ r.error }}
+              } @else {
+                {{ r.spkNo }}
+              }
+            </p>
+          }
+        </div>
+      }
+
+      <lib-button type="submit" [loading]="saving()" [disabled]="form.invalid">
+        {{ 'action.save' | translate }}
+      </lib-button>
+    </form>
+  } @else {
+    <p>{{ 'cabinet.all_spk_issued' | translate }}</p>
+  }
+}

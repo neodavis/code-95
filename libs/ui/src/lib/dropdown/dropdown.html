@@ -1,0 +1,16 @@
+<div class="e-form-group">
+  @if (label) {
+  <label class="e-form-group__label">{{ label }}</label>
+  }
+  <select
+    class="form-control e-form-group__input"
+    [value]="value"
+    (change)="onSelect($event)"
+    (blur)="onTouched()"
+  >
+    <option value="" disabled>{{ placeholder }}</option>
+    @for (option of options; track option.value) {
+    <option [value]="option.value">{{ option.label }}</option>
+    }
+  </select>
+</div>

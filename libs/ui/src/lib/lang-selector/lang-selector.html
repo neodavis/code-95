@@ -1,0 +1,20 @@
+<div class="lang-selector" [class.lang-selector--open]="open">
+  <button class="lang-selector__btn" (click)="toggle()" type="button">
+    {{ ('lang.' + lang) | translate }}
+    <span class="lang-selector__arrow">▾</span>
+  </button>
+  @if (open) {
+  <div class="lang-selector__dropdown">
+    @for (option of options; track option.value) {
+    <button
+      class="lang-selector__option"
+      [class.lang-selector__option--active]="option.value === lang"
+      (click)="select(option.value)"
+      type="button"
+    >
+      {{ option.label }}
+    </button>
+    }
+  </div>
+  }
+</div>

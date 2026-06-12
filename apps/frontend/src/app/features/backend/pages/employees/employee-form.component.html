@@ -1,0 +1,88 @@
+<lib-page-header
+  [title]="(isEdit ? 'page.edit_employee' : 'page.new_employee') | translate"
+/>
+<div class="admin-form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="admin-form-grid">
+      @if (!isEdit) {
+        <div class="e-form-group">
+          <label class="e-form-group__label" for="userId">{{
+            'form.user_id' | translate
+          }}</label>
+          <select
+            id="userId"
+            class="e-form-group__input"
+            [formControl]="form.controls.userId"
+          >
+            <option [value]="null" disabled>—</option>
+            @for (u of users(); track u.id) {
+              <option [value]="u.id">
+                {{ u.uniqueCode }}{{ userLabel(u) }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="e-form-group">
+          <label class="e-form-group__label" for="trainingCenterId">{{
+            'form.tc_id' | translate
+          }}</label>
+          <select
+            id="trainingCenterId"
+            class="e-form-group__input"
+            [formControl]="form.controls.trainingCenterId"
+          >
+            <option [value]="null" disabled>—</option>
+            @for (tc of trainingCenters(); track tc.id) {
+              <option [value]="tc.id">{{ tc.name }}</option>
+            }
+          </select>
+        </div>
+      } @else {
+        <div class="e-form-group">
+          <label class="e-form-group__label">{{
+            'table.user' | translate
+          }}</label>
+          <p class="e-form-group__input bg-gray-100 cursor-default">
+            {{ currentUserLabel() }}
+          </p>
+        </div>
+        <div class="e-form-group">
+          <label class="e-form-group__label">{{
+            'table.training_center' | translate
+          }}</label>
+          <p class="e-form-group__input bg-gray-100 cursor-default">
+            {{ currentTcLabel() }}
+          </p>
+        </div>
+      }
+    </div>
+
+    <div class="e-form-group">
+      <label>
+        <input type="checkbox" [formControl]="form.controls.isActive" />
+        {{ 'form.active' | translate }}
+      </label>
+    </div>
+
+    @if (error()) {
+      <div class="e-form-group__error mb-4">
+        {{ error() }}
+      </div>
+    }
+
+    <div class="admin-form__actions">
+      <lib-button
+        type="submit"
+        variant="primary"
+        [disabled]="form.invalid"
+        [loading]="saving()"
+      >
+        {{ 'action.save' | translate }}
+      </lib-button>
+      <a routerLink="/backend/employees" class="link-simple">{{
+        'action.cancel' | translate
+      }}</a>
+    </div>
+  </form>
+</div>

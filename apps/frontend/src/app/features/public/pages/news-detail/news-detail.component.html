@@ -1,0 +1,9 @@
+<a routerLink="/news" class="link-simple">{{
+  'common.back_to_news' | translate
+}}</a>
+@if (notFound()) {
+  <p>{{ 'common.no_records' | translate }}</p>
+} @else {
+  <lib-page-header [title]="title()" />
+  <div class="article-body" [innerHTML]="body()"></div>
+}

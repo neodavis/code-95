@@ -1,0 +1,58 @@
+<lib-page-header [title]="'admin.employees' | translate">
+  <a routerLink="create" class="link-black link-black_success">{{
+    'action.add_employee' | translate
+  }}</a>
+</lib-page-header>
+
+<lib-data-table
+  [items]="items()"
+  [loading]="loading()"
+  [currentPage]="currentPage()"
+  [totalPages]="totalPages()"
+  [sortColumn]="sortColumn()"
+  [sortOrder]="sortOrder()"
+  (sortChange)="toggleSort($event)"
+  (searchChange)="onSearchInput($event)"
+  (pageChange)="loadPage($event)"
+>
+  <ng-template
+    libColumn="userFullName"
+    header="table.user"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.userFullName || item.userUniqueCode }}
+  </ng-template>
+  <ng-template
+    libColumn="trainingCenterName"
+    header="table.training_center"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.trainingCenterName }}
+  </ng-template>
+  <ng-template
+    libColumn="isActive"
+    header="table.active"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.isActive ? ('common.yes' | translate) : ('common.no' | translate) }}
+  </ng-template>
+  <ng-template
+    libColumn="actions"
+    header="table.actions"
+    tdClass="table-actions"
+    [ellipsis]="false"
+    let-item
+  >
+    <a
+      [routerLink]="[item.id, 'edit']"
+      class="link-simple link-simple_primary"
+      >{{ 'action.edit' | translate }}</a
+    >
+    <button (click)="delete(item)" class="link-simple link-simple_danger">
+      {{ 'action.delete' | translate }}
+    </button>
+  </ng-template>
+</lib-data-table>

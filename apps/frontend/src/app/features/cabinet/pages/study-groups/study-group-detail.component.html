@@ -1,0 +1,473 @@
+<lib-page-header
+  [title]="'page.study_group_detail' | translate"
+></lib-page-header>
+
+@if (group(); as g) {
+  <!-- Group name + status badge -->
+  <div class="d-flex align-items-center mg-b-20 gap-10">
+    <strong class="group-name">{{ g.name }}</strong>
+    <span [ngClass]="statusBadgeClasses[g.status]">
+      {{ statusLabels[g.status] | translate }}
+    </span>
+  </div>
+
+  <!-- Key-value info rows -->
+  <div class="group-info mg-b-24">
+    <div class="group-info__row">
+      <div class="group-info__label">{{ 'spk.tc_name' | translate }}</div>
+      <div class="group-info__value">{{ g.tcName }}</div>
+    </div>
+    <div class="group-info__row">
+      <div class="group-info__label">
+        {{ 'cabinet.date_start' | translate }}
+      </div>
+      <div class="group-info__value">
+        {{ g.dateStart ? (g.dateStart | date: 'dd.MM.yyyy') : '—' }}
+      </div>
+    </div>
+    <div class="group-info__row">
+      <div class="group-info__label">
+        {{ 'cabinet.date_finish' | translate }}
+      </div>
+      <div class="group-info__value">
+        {{ g.dateFinish ? (g.dateFinish | date: 'dd.MM.yyyy') : '—' }}
+      </div>
+    </div>
+    @if (g.carryTypeName) {
+      <div class="group-info__row">
+        <div class="group-info__label">
+          {{ 'table.carry_type' | translate }}
+        </div>
+        <div class="group-info__value">{{ g.carryTypeName }}</div>
+      </div>
+    }
+    @if (g.courseType) {
+      <div class="group-info__row">
+        <div class="group-info__label">{{ 'form.course_type' | translate }}</div>
+        <div class="group-info__value">
+          {{ 'course_type.' + g.courseType | translate }}
+        </div>
+      </div>
+    }
+    <!-- Дії row -->
+    <div class="group-info__row">
+      <div class="group-info__label">{{ 'table.actions' | translate }}</div>
+      <div class="group-info__value group-info__actions">
+        <button
+          class="link-simple link-simple_primary"
+          type="button"
+          title="{{ 'cabinet.import_log_title' | translate }}"
+          (click)="openImportModal()"
+        >
+          <i class="fa-solid fa-bars"></i>
+        </button>
+        <a
+          [routerLink]="['/cabinet/study-groups', g.id, 'edit']"
+          class="link-simple link-simple_primary"
+          title="{{ 'action.edit' | translate }}"
+          ><i class="fa-solid fa-pen"></i
+        ></a>
+        @if (
+          g.status === S.ENROLLMENT_START || g.status === S.ENROLLMENT_FINISH
+        ) {
+          <button
+            class="link-simple link-simple_danger"
+            type="button"
+            [disabled]="deleting()"
+            title="{{ 'cabinet.action_delete_group' | translate }}"
+            (click)="deleteGroup(g.id)"
+          >
+            @if (deleting()) {
+              <span class="btn-spinner"></span>
+            } @else {
+              <i class="fa-solid fa-trash"></i>
+            }
+            {{ 'cabinet.action_delete_group' | translate }}
+          </button>
+        }
+        @if (g.status === S.ENROLLMENT_START) {
+          <button
+            class="link-simple link-simple_danger"
+            type="button"
+            [disabled]="changingStatus()"
+            (click)="changeStatus(g.id, S.CANCELLED)"
+          >
+            @if (changingStatus()) {
+              <span class="btn-spinner"></span>
+            }
+            {{ 'cabinet.action_cancel_group' | translate }}
+          </button>
+          <button
+            class="link-simple link-simple_success"
+            type="button"
+            [disabled]="changingStatus()"
+            (click)="changeStatus(g.id, S.ENROLLMENT_FINISH)"
+          >
+            @if (changingStatus()) {
+              <span class="btn-spinner"></span>
+            }
+            {{ 'cabinet.action_enrollment_finish' | translate }}
+          </button>
+        }
+        @if (g.status === S.ENROLLMENT_FINISH) {
+          <button
+            class="link-simple link-simple_primary"
+            type="button"
+            [disabled]="changingStatus()"
+            (click)="changeStatus(g.id, S.IN_PROGRESS)"
+          >
+            @if (changingStatus()) {
+              <span class="btn-spinner"></span>
+            }
+            {{ 'cabinet.action_start_training' | translate }}
+          </button>
+          <button
+            class="link-simple"
+            type="button"
+            [disabled]="changingStatus()"
+            (click)="changeStatus(g.id, S.ENROLLMENT_START)"
+          >
+            @if (changingStatus()) {
+              <span class="btn-spinner"></span>
+            }
+            {{ 'cabinet.action_reopen_enrollment' | translate }}
+          </button>
+        }
+        @if (g.status === S.IN_PROGRESS) {
+          <button
+            class="link-simple link-simple_success"
+            type="button"
+            [disabled]="changingStatus()"
+            (click)="changeStatus(g.id, S.COMPLETED)"
+          >
+            @if (changingStatus()) {
+              <span class="btn-spinner"></span>
+            }
+            {{ 'cabinet.action_complete_training' | translate }}
+          </button>
+          <button
+            class="link-simple"
+            type="button"
+            [disabled]="changingStatus()"
+            (click)="changeStatus(g.id, S.ENROLLMENT_FINISH)"
+          >
+            @if (changingStatus()) {
+              <span class="btn-spinner"></span>
+            }
+            {{ 'cabinet.action_back_to_enrollment_finish' | translate }}
+          </button>
+        }
+        @if (g.status === S.COMPLETED) {
+          <button
+            class="link-simple"
+            type="button"
+            [disabled]="downloadingSpk()"
+            (click)="downloadSpkArchive(g.id)"
+          >
+            @if (downloadingSpk()) {
+              <span class="btn-spinner"></span>
+            } @else {
+              <i class="fa-solid fa-arrow-down"></i>
+            }
+            {{ 'cabinet.spk_package' | translate }}
+          </button>
+          <button
+            class="link-simple link-simple_success"
+            type="button"
+            [disabled]="downloadingPersonalization()"
+            (click)="downloadPersonalizationArchive(g.id)"
+          >
+            @if (downloadingPersonalization()) {
+              <span class="btn-spinner"></span>
+            } @else {
+              <i class="fa-solid fa-arrow-down"></i>
+            }
+            {{ 'cabinet.personalization' | translate }}
+          </button>
+        }
+        @if (g.status === S.CANCELLED) {
+          <button
+            class="link-simple link-simple_primary"
+            type="button"
+            [disabled]="changingStatus()"
+            (click)="changeStatus(g.id, S.ENROLLMENT_START)"
+          >
+            @if (changingStatus()) {
+              <span class="btn-spinner"></span>
+            }
+            {{ 'cabinet.action_reopen' | translate }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Students heading + selection actions + enrollment add buttons -->
+  <div class="d-flex align-items-center mg-b-15">
+    <h5 class="mg-b-0">
+      {{ 'cabinet.students' | translate }} ({{ g.students.length }} /
+      {{ MAX_GROUP_SIZE }})
+      @if (g.students.length >= MAX_GROUP_SIZE) {
+        <span class="text-danger small">
+          — {{ 'cabinet.group_full' | translate }}
+        </span>
+      }
+    </h5>
+    <div class="mg-l-auto d-flex align-items-center gap-10">
+      @if (g.status === S.IN_PROGRESS && anySelected()) {
+        <button
+          class="link-simple link-simple_primary"
+          type="button"
+          (click)="createSpkForSelected(g)"
+        >
+          {{ 'cabinet.create_spk_for_selected' | translate }}
+          <i class="fa-solid fa-arrow-up"></i>
+        </button>
+        <button
+          class="link-simple"
+          type="button"
+          [disabled]="downloadingSpk()"
+          (click)="downloadSpkForSelected(g)"
+        >
+          @if (downloadingSpk()) {
+            <span class="btn-spinner"></span>
+          }
+          {{ 'cabinet.download_spk' | translate }}
+          @if (!downloadingSpk()) {
+            <i class="fa-solid fa-arrow-down"></i>
+          }
+        </button>
+      }
+      @if (
+        g.status === S.ENROLLMENT_START && g.students.length < MAX_GROUP_SIZE
+      ) {
+        <a
+          [routerLink]="['/cabinet/study-groups', g.id, 'add-driver']"
+          class="e-button e-button_primary"
+          >{{ 'cabinet.add_new_driver' | translate }}</a
+        >
+        <a
+          [routerLink]="['/cabinet/study-groups', g.id, 'search-driver']"
+          class="e-button"
+          >{{ 'cabinet.add_existing_driver' | translate }}</a
+        >
+        <label class="e-button cursor-pointer" [class.disabled]="importing()">
+          @if (importing()) {
+            <span class="btn-spinner"></span>
+          }
+          {{ 'cabinet.import_excel' | translate }}
+          <input
+            type="file"
+            accept=".xlsx,.xls"
+            class="hidden"
+            [disabled]="importing()"
+            (change)="onImportFile($event, g.id)"
+          />
+        </label>
+      }
+    </div>
+  </div>
+
+  <!-- Import Excel Modal -->
+  @if (importModalOpen()) {
+    <div
+      class="modal-backdrop"
+      role="button"
+      tabindex="0"
+      (click)="closeImportModal()"
+      (keydown.enter)="closeImportModal()"
+      (keydown.space)="closeImportModal()"
+    >
+      <div
+        class="modal-dialog"
+        role="presentation"
+        (click)="$event.stopPropagation()"
+      >
+        <div class="modal-header">
+          <h5 class="modal-title">
+            {{ 'cabinet.import_log_title' | translate }}
+          </h5>
+          <button
+            class="modal-close"
+            type="button"
+            (click)="closeImportModal()"
+          >
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          @if (importLogs().length) {
+            @for (log of importLogs(); track log.timestamp) {
+              <div class="import-log-entry">
+                <div class="import-log-entry__time">{{ log.timestamp }}</div>
+                <div>
+                  <span class="text-success">
+                    {{ 'cabinet.import_done' | translate }}: {{ log.imported }}
+                  </span>
+                  @if (log.skipped) {
+                    <span class="mg-l-15 text-warning">
+                      {{ 'cabinet.import_skipped' | translate }}:
+                      {{ log.skipped }}
+                    </span>
+                  }
+                </div>
+                @for (err of log.errors; track err) {
+                  <div class="text-danger">{{ err }}</div>
+                }
+              </div>
+            }
+          } @else {
+            <p class="import-log-empty">
+              {{ 'cabinet.no_import_records' | translate }}
+            </p>
+          }
+        </div>
+        <div class="modal-footer">
+          <label
+            class="e-button e-button_primary cursor-pointer"
+            [class.disabled]="importing()"
+          >
+            @if (importing()) {
+              <span class="btn-spinner"></span>
+            }
+            {{ 'cabinet.import_excel' | translate }}
+            <input
+              type="file"
+              accept=".xlsx,.xls"
+              class="hidden"
+              [disabled]="importing()"
+              (change)="onImportFile($event, g.id)"
+            />
+          </label>
+          <button class="e-button" type="button" (click)="closeImportModal()">
+            {{ 'action.hide' | translate }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Students table -->
+  <div class="overflow-x-auto">
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="col-cb">
+          <input
+            type="checkbox"
+            [checked]="allSelected()"
+            [indeterminate]="anySelected() && !allSelected()"
+            (change)="toggleAll(g.students)"
+          />
+        </th>
+        <th>{{ 'table.pip' | translate }}</th>
+        <th>{{ 'table.contact_phone' | translate }}</th>
+        <th>{{ 'table.email_address' | translate }}</th>
+        <th>{{ 'table.spk' | translate }}</th>
+        <th>{{ 'table.card' | translate }}</th>
+        @if (g.status === S.ENROLLMENT_START) {
+          <th></th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (s of g.students; track s.id) {
+        <tr [class.row-selected]="selectedIds().has(s.id)">
+          <td class="col-cb">
+            <input
+              type="checkbox"
+              [checked]="selectedIds().has(s.id)"
+              (change)="toggleDriver(s.id)"
+            />
+          </td>
+          <td>
+            <span class="d-flex align-items-center text-nowrap">
+              <a
+                [routerLink]="['/cabinet/drivers', s.id]"
+                class="link-simple link-simple_primary"
+              >
+                {{ s.surname }} {{ s.firstName }} {{ s.middleName }}
+              </a>
+              @if (s.idEspk) {
+                <a
+                  [routerLink]="['/registry', s.id]"
+                  class="link-simple link-simple_danger mg-l-5"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="{{ 'cabinet.qr_public_page' | translate }}"
+                >
+                  <i class="fa-solid fa-qrcode"></i>
+                </a>
+              }
+            </span>
+          </td>
+          <td>{{ s.phone ?? '—' }}</td>
+          <td>{{ s.email ?? '—' }}</td>
+          <td>
+            @if (s.idEspk) {
+              <a
+                [routerLink]="['/cabinet/espk', s.idEspk]"
+                class="link-simple link-simple_primary"
+                >{{ 'common.view' | translate }}</a
+              >
+            } @else if (g.status === S.COMPLETED) {
+              <a
+                [routerLink]="['/cabinet/study-groups', g.id, 'spk']"
+                [queryParams]="{ driverId: s.id }"
+                class="link-simple link-simple_primary"
+                >{{ 'common.create' | translate }}</a
+              >
+            } @else {
+              —
+            }
+          </td>
+          <td>
+            @if (s.idCard) {
+              <a
+                [routerLink]="['/cabinet/ecards', s.idCard]"
+                class="link-simple link-simple_primary"
+                >{{ 'common.view' | translate }}</a
+              >
+            } @else if (s.idEspk) {
+              <a
+                [routerLink]="['/cabinet/study-groups', g.id, 'ecard', s.id]"
+                class="link-simple link-simple_primary"
+                >{{ 'common.create' | translate }}</a
+              >
+            } @else {
+              —
+            }
+          </td>
+          @if (g.status === S.ENROLLMENT_START) {
+            <td>
+              <button
+                class="link-simple link-simple_danger"
+                type="button"
+                [disabled]="removingStudentId() === s.id"
+                (click)="removeStudent(g.id, s.id)"
+              >
+                @if (removingStudentId() === s.id) {
+                  <span class="btn-spinner"></span>
+                }
+                {{ 'action.delete' | translate }}
+              </button>
+            </td>
+          }
+        </tr>
+      } @empty {
+        <tr>
+          <td
+            [attr.colspan]="g.status === S.ENROLLMENT_START ? 7 : 6"
+            class="table__empty"
+          >
+            {{ 'cabinet.no_students' | translate }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  </div>
+
+} @else if (loading()) {
+  <p>{{ 'common.loading' | translate }}</p>
+}

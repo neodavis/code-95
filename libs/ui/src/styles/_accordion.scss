@@ -1,0 +1,126 @@
+// ============================================================
+// Accordion — exact port of Django accordion.scss
+// Uses [aria-expanded] attribute selectors exactly as source
+// ============================================================
+
+.accordion {
+  margin: 0 -15px;
+
+  @media (min-width: $bp-md) {
+    margin: 0 -30px;
+  }
+}
+
+.accordion-item {
+  padding: 0 15px;
+  margin-bottom: 14px;
+
+  @media (min-width: $bp-md) {
+    padding: 0 30px;
+    margin-bottom: 14px;
+  }
+
+  &[aria-expanded='true'] {
+    background-color: var(--color-accordion-bg);
+
+    .accordion-item__icon_expanded-show {
+      opacity: 1;
+      width: auto;
+    }
+
+    .accordion-item__icon_expanded-hide {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+  }
+
+  &[aria-expanded='false'] {
+    .accordion-item__icon_expanded-show {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .accordion-item__icon_expanded-hide {
+      opacity: 1;
+      width: auto;
+    }
+  }
+
+  &:not([aria-expanded]) {
+    .accordion-item__icon_expanded-show {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .accordion-item__icon_expanded-hide {
+      opacity: 1;
+      width: auto;
+    }
+  }
+
+  &__icon {
+    display: none;
+    font-size: 14px;
+  }
+
+  &:hover .accordion-item__icon {
+    display: block;
+  }
+
+  &__body {
+    padding: 30px 0;
+    font-size: 16px;
+    line-height: 25px;
+  }
+
+  &__actions {
+    min-width: 20px;
+  }
+
+  &__header {
+    padding: 20px 0;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1.5;
+    align-items: center;
+
+    &::before {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: black;
+      width: 100%;
+      content: '';
+    }
+
+    &:hover {
+      &::before {
+        background: var(--gradient-accent);
+      }
+
+      i {
+        color: #cac5b4;
+      }
+    }
+  }
+
+  &__title {
+    .accordion-item__header:hover & {
+      background: white;
+      -webkit-text-fill-color: transparent;
+      background: var(--gradient-accent);
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+  }
+}

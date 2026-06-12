@@ -1,0 +1,76 @@
+<lib-page-header [title]="'page.graduates' | translate" />
+
+<lib-data-table
+  [items]="items()"
+  [loading]="loading()"
+  [currentPage]="currentPage()"
+  [totalPages]="totalPages()"
+  [sortColumn]="sortColumn()"
+  [sortOrder]="sortOrder()"
+  (sortChange)="toggleSort($event)"
+  (searchChange)="onSearchInput($event)"
+  (pageChange)="loadPage($event)"
+>
+  <ng-template
+    libColumn="surname"
+    header="table.pip"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.surname }} {{ item.firstName }} {{ item.middleName }}
+  </ng-template>
+  <ng-template
+    libColumn="taxNumber"
+    header="table.tax_number"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.taxNumber }}
+  </ng-template>
+  <ng-template libColumn="spk" header="table.spk" let-item>
+    @if (item.idEspk) {
+      <a
+        [routerLink]="['/cabinet/espk', item.idEspk]"
+        class="link-simple link-simple_primary"
+      >
+        {{ 'common.view' | translate }}
+      </a>
+    } @else if (item.groupId) {
+      <a
+        [routerLink]="['/cabinet/study-groups', item.groupId, 'spk']"
+        [queryParams]="{ driverId: item.id }"
+        class="link-simple link-simple_primary"
+      >
+        {{ 'cabinet.create_spk' | translate }}
+      </a>
+    } @else {
+      —
+    }
+  </ng-template>
+  <ng-template libColumn="card" header="table.card" let-item>
+    @if (item.idCard) {
+      <a
+        [routerLink]="['/cabinet/ecards', item.idCard]"
+        class="link-simple link-simple_primary"
+      >
+        {{ 'common.view' | translate }}
+      </a>
+    } @else if (item.groupId) {
+      <a
+        [routerLink]="['/cabinet/study-groups', item.groupId, 'ecard', item.id]"
+        class="link-simple link-simple_primary"
+      >
+        {{ 'cabinet.create_card' | translate }}
+      </a>
+    } @else {
+      —
+    }
+  </ng-template>
+  <ng-template libColumn="status" header="table.status" let-item>
+    @if (item.idEspk) {
+      <span class="text-success">{{ 'status.certified' | translate }}</span>
+    } @else {
+      <span class="text-warning">{{ 'status.in_training' | translate }}</span>
+    }
+  </ng-template>
+</lib-data-table>

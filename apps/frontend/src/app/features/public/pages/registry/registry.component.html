@@ -1,0 +1,27 @@
+<lib-page-header [title]="'page.registry' | translate" />
+<div class="overflow-x-auto">
+<table class="table">
+  <thead>
+    <tr>
+      <th class="w-1/3">{{ 'table.driver' | translate }}</th>
+      <th>{{ 'table.carry_type' | translate }}</th>
+      <th class="w-1/3">{{ 'table.training_center' | translate }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (entry of entries; track entry.driver) {
+      <tr>
+        <td>{{ entry.driver }}</td>
+        <td>{{ entry.carryType }}</td>
+        <td>{{ entry.trainingCenter }}</td>
+      </tr>
+    } @empty {
+      <tr>
+        <td colspan="3" class="table__empty">
+          {{ 'common.loading' | translate }}
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+</div>

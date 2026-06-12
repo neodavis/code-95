@@ -1,0 +1,15 @@
+.nx
+.angular
+node_modules
+.vscode
+.idea
+.claude
+dist
+.env
+.env.dev
+.env.prod
+*.local
+.playwright-mcp/
+docs/
+
+.DS_Store

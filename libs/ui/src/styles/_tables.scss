@@ -1,0 +1,183 @@
+.table-wrap {
+  min-height: calc(var(--table-row-height) * (var(--table-min-rows) + 1));
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+.table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  margin-bottom: 1rem;
+  font-size: var(--font-size-base);
+
+  thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+    border-bottom: 2px solid var(--color-black);
+    white-space: nowrap;
+  }
+
+  tbody {
+    tr {
+      border-bottom: 1px solid #dee2e6;
+      transition: background-color 0.15s ease;
+
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+      }
+    }
+
+    td {
+      padding: 12px 16px;
+      vertical-align: middle;
+    }
+  }
+
+  &__empty {
+    text-align: center;
+    color: #888;
+    padding: 32px 16px;
+  }
+}
+
+@media (max-width: $bp-md) {
+  .table-wrap {
+    min-height: 0;
+  }
+
+  .table {
+    table-layout: auto;
+
+    thead th {
+      white-space: normal;
+      padding: 8px 10px;
+    }
+
+    tbody td {
+      padding: 8px 10px;
+    }
+  }
+}
+
+// -- Sortable column headers --------------------------------------------------
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-right: 24px !important;
+
+  &::after {
+    content: '\21C5';
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.3;
+    font-size: 12px;
+  }
+
+  &:hover::after {
+    opacity: 0.6;
+  }
+}
+
+.sort-asc::after {
+  content: '\2191' !important;
+  opacity: 1 !important;
+}
+
+.sort-desc::after {
+  content: '\2193' !important;
+  opacity: 1 !important;
+}
+
+// -- Search input above table -------------------------------------------------
+
+.table-search {
+  margin-bottom: 16px;
+
+  &__input {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: var(--font-body);
+    border: 1px solid #ced4da;
+    border-radius: var(--radius-md);
+    background-color: var(--color-white);
+    outline: none;
+    transition: border-color 0.15s ease-in-out;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-black);
+      box-shadow: 0 0 0 2px rgba(9, 9, 9, 0.15);
+    }
+
+    &::placeholder {
+      color: #aaa;
+    }
+  }
+}
+
+// -- Cell ellipsis (for overflow text with tooltip) ----------------------------
+
+.cell-ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// -- Actions column should not truncate ----------------------------------------
+
+.table-actions {
+  white-space: nowrap;
+}
+
+// -- Tooltip overlay (used by EllipsisDirective) -------------------------------
+
+.lib-tooltip {
+  position: fixed;
+  z-index: 10000;
+  max-width: 400px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-family: var(--font-body);
+  line-height: 1.4;
+  color: #fff;
+  background-color: #333;
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  word-wrap: break-word;
+
+  // Arrow pointing down (tooltip above element)
+  &::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -5px;
+    border-width: 5px 5px 0;
+    border-style: solid;
+    border-color: #333 transparent transparent;
+  }
+
+  // When flipped below element, arrow points up
+  &--bottom::after {
+    bottom: auto;
+    top: -5px;
+    border-width: 0 5px 5px;
+    border-color: transparent transparent #333;
+  }
+
+  &--visible {
+    opacity: 1;
+  }
+}

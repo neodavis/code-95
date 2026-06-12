@@ -1,0 +1,14 @@
+<label class="e-checkbox" [class.e-checkbox--disabled]="disabled">
+  <input
+    class="e-checkbox__native"
+    type="checkbox"
+    [checked]="checked"
+    [disabled]="disabled"
+    (blur)="onTouched()"
+    (change)="toggle()"
+  />
+  <span class="e-checkbox__mark"></span>
+  @if (label) {
+  <span class="e-checkbox__label">{{ label }}</span>
+  }
+</label>

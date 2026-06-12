@@ -1,0 +1,145 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "title": "Service Status",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 0 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "up{job=\"api\"}",
+          "legendFormat": "API"
+        },
+        {
+          "expr": "up{job=\"postgres\"}",
+          "legendFormat": "PostgreSQL"
+        },
+        {
+          "expr": "up{job=\"nginx\"}",
+          "legendFormat": "Nginx"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "0": { "text": "DOWN", "color": "red" },
+                "1": { "text": "UP", "color": "green" }
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "title": "Node.js Process — CPU Usage",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "rate(process_cpu_seconds_total{job=\"api\"}[5m]) * 100",
+          "legendFormat": "CPU %"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "percent" }
+      }
+    },
+    {
+      "title": "Node.js Process — Memory (RSS)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "process_resident_memory_bytes{job=\"api\"}",
+          "legendFormat": "RSS"
+        },
+        {
+          "expr": "nodejs_heap_size_used_bytes{job=\"api\"}",
+          "legendFormat": "Heap Used"
+        },
+        {
+          "expr": "nodejs_heap_size_total_bytes{job=\"api\"}",
+          "legendFormat": "Heap Total"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "bytes" }
+      }
+    },
+    {
+      "title": "Event Loop Lag",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "nodejs_eventloop_lag_seconds{job=\"api\"}",
+          "legendFormat": "event loop lag"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "s" }
+      }
+    },
+    {
+      "title": "API Request Rate",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{job=\"api\"}[5m]))",
+          "legendFormat": "API req/s"
+        },
+        {
+          "expr": "sum(rate(http_requests_total{job=\"api\", status_code=~\"5..\"}[5m]))",
+          "legendFormat": "5xx/s"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "reqps" }
+      }
+    },
+    {
+      "title": "PostgreSQL Connections",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 12, "x": 0, "y": 20 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "sum(pg_stat_activity_count{job=\"postgres\", state=\"active\"})",
+          "legendFormat": "Active"
+        }
+      ]
+    },
+    {
+      "title": "Nginx Active Connections",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 12, "x": 12, "y": 20 },
+      "datasource": { "type": "prometheus", "uid": "PBFA97CFB590B2093" },
+      "targets": [
+        {
+          "expr": "nginx_connections_active{job=\"nginx\"}",
+          "legendFormat": "Active"
+        }
+      ]
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": ["overview", "code-95"],
+  "templating": { "list": [] },
+  "time": { "from": "now-1h", "to": "now" },
+  "title": "System Overview",
+  "uid": "system-overview"
+}

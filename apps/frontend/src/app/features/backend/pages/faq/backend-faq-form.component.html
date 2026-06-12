@@ -1,0 +1,69 @@
+<lib-page-header
+  [title]="(isEdit ? 'page.edit_faq' : 'page.new_faq') | translate"
+/>
+<div class="admin-form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="e-form-group">
+      <label class="e-form-group__label" for="question">{{
+        'form.question' | translate
+      }}</label>
+      <input
+        id="question"
+        class="e-form-group__input"
+        [class.e-form-group__input--invalid]="
+          form.controls.question.touched && form.controls.question.invalid
+        "
+        [formControl]="form.controls.question"
+        type="text"
+        placeholder="Ваше питання"
+      />
+      @if (form.controls.question.touched && form.controls.question.invalid) {
+        <span class="e-form-group__error">{{
+          form.controls.question.errors | fieldError
+        }}</span>
+      }
+    </div>
+    <div class="e-form-group">
+      <label class="e-form-group__label" for="answer">{{
+        'form.answer' | translate
+      }}</label>
+      <quill-editor
+        id="answer"
+        [formControl]="form.controls.answer"
+        placeholder="Відповідь"
+        [modules]="{
+          toolbar: [
+            ['bold', 'italic', 'underline'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['link'],
+            [{ header: [2, 3, false] }],
+          ],
+        }"
+      ></quill-editor>
+    </div>
+    <div class="e-form-group">
+      <label>
+        <input type="checkbox" [formControl]="form.controls.isPublished" />
+        {{ 'form.published' | translate }}
+      </label>
+    </div>
+    @if (error()) {
+      <div class="e-form-group__error mb-4">
+        {{ error() }}
+      </div>
+    }
+    <div class="admin-form__actions">
+      <lib-button
+        type="submit"
+        variant="primary"
+        [disabled]="form.invalid"
+        [loading]="saving()"
+      >
+        {{ 'action.save' | translate }}
+      </lib-button>
+      <a routerLink="/backend/faq" class="link-simple">{{
+        'action.cancel' | translate
+      }}</a>
+    </div>
+  </form>
+</div>

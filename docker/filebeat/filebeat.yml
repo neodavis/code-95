@@ -1,0 +1,20 @@
+filebeat.inputs:
+  - type: container
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    processors:
+      - add_docker_metadata:
+          host: 'unix:///var/run/docker.sock'
+      - decode_json_fields:
+          fields: ['message']
+          target: 'parsed'
+          overwrite_keys: true
+          add_error_key: true
+
+output.elasticsearch:
+  hosts: ['http://elasticsearch:9200']
+  indices:
+    - index: 'filebeat-%{+yyyy.MM.dd}'
+
+logging.level: warning
+logging.to_stderr: true

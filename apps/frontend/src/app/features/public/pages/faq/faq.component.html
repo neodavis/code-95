@@ -1,0 +1,12 @@
+<lib-page-header [title]="'page.faq' | translate" />
+@if (items().length) {
+  <lib-accordion>
+    @for (item of items(); track item.id) {
+      <lib-accordion-item [title]="item.question">
+        <div [innerHTML]="item.answer"></div>
+      </lib-accordion-item>
+    }
+  </lib-accordion>
+} @else if (!loading()) {
+  <p>{{ 'common.no_records' | translate }}</p>
+}

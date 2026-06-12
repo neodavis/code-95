@@ -1,0 +1,171 @@
+<lib-page-header [title]="'admin.audit_logs' | translate"></lib-page-header>
+
+<div class="admin-form mb-4 !max-w-none">
+  <div class="admin-form-grid">
+    <div class="e-form-group">
+      <label class="e-form-group__label" for="audit-filter-action">{{
+        'audit.filter_action' | translate
+      }}</label>
+      <select
+        id="audit-filter-action"
+        class="e-form-group__input"
+        [ngModel]="actionFilter()"
+        (ngModelChange)="actionFilter.set($event)"
+      >
+        <option value="">—</option>
+        @for (a of auditActions; track a) {
+          <option [value]="a">{{ 'audit.action.' + a | translate }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="e-form-group">
+      <label class="e-form-group__label" for="audit-filter-user">{{
+        'audit.filter_user' | translate
+      }}</label>
+      <input
+        id="audit-filter-user"
+        class="e-form-group__input"
+        type="text"
+        autocomplete="off"
+        [ngModel]="userFilter()"
+        (ngModelChange)="userFilter.set($event)"
+      />
+    </div>
+
+    <div class="e-form-group">
+      <label class="e-form-group__label" for="audit-filter-entity">{{
+        'audit.filter_entity' | translate
+      }}</label>
+      <input
+        id="audit-filter-entity"
+        class="e-form-group__input"
+        type="text"
+        autocomplete="off"
+        [ngModel]="entityFilter()"
+        (ngModelChange)="entityFilter.set($event)"
+      />
+    </div>
+
+    <div class="e-form-group">
+      <label class="e-form-group__label" for="audit-filter-date-from">{{
+        'audit.filter_date_from' | translate
+      }}</label>
+      <input
+        id="audit-filter-date-from"
+        class="e-form-group__input"
+        type="date"
+        [ngModel]="dateFromFilter()"
+        (ngModelChange)="dateFromFilter.set($event)"
+      />
+    </div>
+
+    <div class="e-form-group">
+      <label class="e-form-group__label" for="audit-filter-date-to">{{
+        'audit.filter_date_to' | translate
+      }}</label>
+      <input
+        id="audit-filter-date-to"
+        class="e-form-group__input"
+        type="date"
+        [ngModel]="dateToFilter()"
+        (ngModelChange)="dateToFilter.set($event)"
+      />
+    </div>
+  </div>
+
+  <div class="admin-form__actions">
+    <button
+      type="button"
+      class="link-black link-black_primary"
+      (click)="applyFilters()"
+    >
+      {{ 'audit.filter_apply' | translate }}
+    </button>
+    <button
+      type="button"
+      class="link-black link-black_danger"
+      (click)="resetFilters()"
+    >
+      {{ 'audit.filter_reset' | translate }}
+    </button>
+  </div>
+</div>
+
+<lib-data-table
+  [items]="items()"
+  [loading]="loading()"
+  [currentPage]="currentPage()"
+  [totalPages]="totalPages()"
+  [sortColumn]="sortColumn()"
+  [sortOrder]="sortOrder()"
+  (sortChange)="toggleSort($event)"
+  (pageChange)="loadPage($event)"
+>
+  <ng-template
+    libColumn="createdAt"
+    header="table.date"
+    width="170px"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.createdAt | date: 'dd.MM.yyyy HH:mm:ss' }}
+  </ng-template>
+  <ng-template
+    libColumn="action"
+    header="table.action"
+    width="180px"
+    [sortable]="true"
+    let-item
+  >
+    <code>{{ item.action }}</code>
+  </ng-template>
+  <ng-template
+    libColumn="entity"
+    header="table.entity"
+    width="140px"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.entity || '—' }}
+  </ng-template>
+  <ng-template
+    libColumn="entityId"
+    header="table.entity_id"
+    width="120px"
+    let-item
+  >
+    {{ item.entityId || '—' }}
+  </ng-template>
+  <ng-template
+    libColumn="userId"
+    header="table.user_id"
+    width="120px"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.userId || '—' }}
+  </ng-template>
+  <ng-template
+    libColumn="ipAddress"
+    header="table.ip_address"
+    width="140px"
+    let-item
+  >
+    {{ item.ipAddress || '—' }}
+  </ng-template>
+  <ng-template
+    libColumn="changes"
+    header="table.changes"
+    [ellipsis]="false"
+    let-item
+  >
+    @if (item.changes) {
+      <pre class="text-[12px] whitespace-pre-wrap break-all">{{
+        item.changes | json
+      }}</pre>
+    } @else {
+      —
+    }
+  </ng-template>
+</lib-data-table>

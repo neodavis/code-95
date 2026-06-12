@@ -1,0 +1,134 @@
+@if (spk(); as s) {
+  <lib-page-header [title]="'SPK № ' + s.spkNo">
+    <button
+      class="link-simple"
+      type="button"
+      [disabled]="downloading()"
+      (click)="downloadPdf()"
+    >
+      @if (downloading()) {
+        <span class="btn-spinner"></span>
+      }
+      {{ 'action.download_pdf' | translate }}
+    </button>
+    <a [routerLink]="['/cabinet/espk', s.id, 'edit']" class="link-simple">
+      {{ 'action.edit' | translate }}
+    </a>
+  </lib-page-header>
+
+  <table class="table max-w-[700px]">
+    <tbody>
+      <tr>
+        <td>
+          <strong>{{ 'spk.driver_pip' | translate }}</strong>
+        </td>
+        <td>
+          <a
+            [routerLink]="['/cabinet/drivers', s.driverId]"
+            class="link-simple -ms-2"
+          >
+            {{ s.driverPipFull ?? s.driverPip }}
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'spk.tc_name' | translate }}</strong>
+        </td>
+        <td>{{ s.tcName }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'spk.tc_cert_no' | translate }}</strong>
+        </td>
+        <td>{{ s.tcCertNo }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'spk.date_of_birth' | translate }}</strong>
+        </td>
+        <td>
+          {{ s.dateOfBirth ? (s.dateOfBirth | date: 'dd.MM.yyyy') : '—' }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'spk.country_of_birth' | translate }}</strong>
+        </td>
+        <td>{{ s.countryOfBirth ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'spk.carry_type' | translate }}</strong>
+        </td>
+        <td>{{ s.carryTypeTxt ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'spk.date_of_test' | translate }}</strong>
+        </td>
+        <td>{{ s.dateOfTest ? (s.dateOfTest | date: 'dd.MM.yyyy') : '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'spk.test_protocol_no' | translate }}</strong>
+        </td>
+        <td>{{ s.testProtocolNo ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'spk.date_of_test_protocol' | translate }}</strong>
+        </td>
+        <td>
+          {{
+            s.dateOfTestProtocol
+              ? (s.dateOfTestProtocol | date: 'dd.MM.yyyy')
+              : '—'
+          }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'spk.date_of_expiry' | translate }}</strong>
+        </td>
+        <td>
+          {{ s.dateOfExpiry ? (s.dateOfExpiry | date: 'dd.MM.yyyy') : '—' }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'spk.miniinfra' | translate }}</strong>
+        </td>
+        <td>
+          {{
+            s.dateOfMiniinfra ? (s.dateOfMiniinfra | date: 'dd.MM.yyyy') : '—'
+          }}
+          № {{ s.miniinfraNo ?? '—' }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'spk.minjust' | translate }}</strong>
+        </td>
+        <td>
+          {{ s.dateOfMinjust ? (s.dateOfMinjust | date: 'dd.MM.yyyy') : '—' }}
+          № {{ s.minjustNo ?? '—' }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'spk.position' | translate }}</strong>
+        </td>
+        <td>{{ s.position ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'spk.chief_pip' | translate }}</strong>
+        </td>
+        <td>{{ s.chiefPip ?? '—' }}</td>
+      </tr>
+    </tbody>
+  </table>
+} @else if (loading()) {
+  <p>{{ 'common.loading' | translate }}</p>
+}

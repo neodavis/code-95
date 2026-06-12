@@ -1,0 +1,68 @@
+<div class="table-search">
+  <input
+    class="table-search__input"
+    [placeholder]="'table.search_placeholder' | translate"
+    (input)="onSearch($event)"
+  />
+</div>
+<div class="table-wrap">
+  <table class="table">
+    <thead>
+      <tr>
+        @for (col of columns; track col.id) { @if (col.sortable) {
+        <th
+          [class]="getSortClass(col.id)"
+          [style.width]="col.width || null"
+          (click)="sortChange.emit(col.id)"
+        >
+          {{ col.header | translate }}
+        </th>
+        } @else {
+        <th [style.width]="col.width || null">{{ col.header | translate }}</th>
+        } }
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of items; track $index) {
+      <tr>
+        @for (col of columns; track col.id) {
+        <td [class]="col.tdClass">
+          @if (col.ellipsis) {
+          <div libEllipsis>
+            <ng-container
+              [ngTemplateOutlet]="col.templateRef"
+              [ngTemplateOutletContext]="{ $implicit: item }"
+            />
+          </div>
+          } @else {
+          <ng-container
+            [ngTemplateOutlet]="col.templateRef"
+            [ngTemplateOutletContext]="{ $implicit: item }"
+          />
+          }
+        </td>
+        }
+      </tr>
+      } @empty { @if (loading) {
+      <tr>
+        <td [attr.colspan]="columns.length" class="table__empty">
+          {{ 'common.loading' | translate }}
+        </td>
+      </tr>
+      } @else {
+      <tr>
+        <td [attr.colspan]="columns.length" class="table__empty">
+          {{ 'common.no_records' | translate }}
+        </td>
+      </tr>
+      } }
+    </tbody>
+  </table>
+</div>
+@if (totalPages > 1) {
+<lib-pagination
+  [currentPage]="currentPage"
+  [totalPages]="totalPages"
+  (pageChange)="pageChange.emit($event)"
+/>
+}

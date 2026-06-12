@@ -1,0 +1,234 @@
+services:
+  # ──────────────────────────────────────────────
+  # Core Application (profile: main)
+  # ──────────────────────────────────────────────
+
+  postgres:
+    image: postgres:16-alpine
+    profiles: ['main']
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+    ports:
+      - '${POSTGRES_EXPOSE_PORT:-}5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}']
+      interval: 5s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    profiles: ['main']
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio123}
+    volumes:
+      - miniodata:/data
+    ports:
+      - '9000:9000'
+      - '9001:9001'
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
+      interval: 10s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    profiles: ['main']
+    ports:
+      - '3001:3000'
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL}
+      SITE_URL: ${SITE_URL:-${FRONTEND_URL}}
+      PORT: 3000
+      NODE_ENV: production
+      TYPEORM_LOGGING: ${TYPEORM_LOGGING:-false}
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_PUBLIC_URL: ${MINIO_PUBLIC_URL:-http://localhost:9000}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minio123}
+      MINIO_BUCKET: ${MINIO_BUCKET:-ecard-files}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    healthcheck:
+      test:
+        ['CMD-SHELL', 'curl -f http://localhost:3000/api/v1/health || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+      args:
+        BUILD_CONFIGURATION: ${BUILD_CONFIGURATION:-production}
+    profiles: ['main']
+    ports:
+      - '80:80'
+    depends_on:
+      - api
+
+  # ──────────────────────────────────────────────
+  # Monitoring, Logging & Developer Tools (profile: monitoring)
+  # ──────────────────────────────────────────────
+
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    profiles: ['monitoring']
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - '9090:9090'
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    profiles: ['monitoring']
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+    volumes:
+      - grafanadata:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./docker/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    ports:
+      - '3100:3000'
+    depends_on:
+      - prometheus
+      - elasticsearch
+    restart: unless-stopped
+
+  postgres-exporter:
+    image: prometheuscommunity/postgres-exporter:v0.15.0
+    profiles: ['monitoring']
+    command: --config.file=/dev/null
+    environment:
+      DATA_SOURCE_URI: postgres:5432/${POSTGRES_DB}?sslmode=disable
+      DATA_SOURCE_USER: ${POSTGRES_USER}
+      DATA_SOURCE_PASS: ${POSTGRES_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  nginx-exporter:
+    image: nginx/nginx-prometheus-exporter:1.1
+    profiles: ['monitoring']
+    command: --nginx.scrape-uri=http://frontend:80/stub_status
+    depends_on:
+      - frontend
+    restart: unless-stopped
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+    profiles: ['monitoring']
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms256m -Xmx256m
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - '9200:9200'
+    healthcheck:
+      test:
+        ['CMD-SHELL', 'curl -f http://localhost:9200/_cluster/health || exit 1']
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.0
+    profiles: ['monitoring']
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - '5601:5601'
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    restart: unless-stopped
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.13.0
+    profiles: ['monitoring']
+    user: root
+    volumes:
+      - ./docker/filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    restart: unless-stopped
+
+  sonar-db:
+    image: postgres:16-alpine
+    profiles: ['monitoring']
+    environment:
+      POSTGRES_USER: sonar
+      POSTGRES_PASSWORD: sonar
+      POSTGRES_DB: sonar
+    volumes:
+      - sonardbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U sonar -d sonar']
+      interval: 5s
+      retries: 10
+
+  sonarqube:
+    image: sonarqube:lts-community
+    profiles: ['monitoring']
+    environment:
+      SONAR_JDBC_URL: jdbc:postgresql://sonar-db:5432/sonar
+      SONAR_JDBC_USERNAME: sonar
+      SONAR_JDBC_PASSWORD: sonar
+      SONAR_SECURITY_REALM: ''
+      SONAR_WEB_ADMINPASSWORD: ${SONAR_ADMIN_PASSWORD:-admin}
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - sonardata:/opt/sonarqube/data
+      - sonarextensions:/opt/sonarqube/extensions
+      - sonarlogs:/opt/sonarqube/logs
+    ports:
+      - '9010:9000'
+    depends_on:
+      sonar-db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  miniodata:
+  esdata:
+  grafanadata:
+  sonardbdata:
+  sonardata:
+  sonarextensions:
+  sonarlogs:

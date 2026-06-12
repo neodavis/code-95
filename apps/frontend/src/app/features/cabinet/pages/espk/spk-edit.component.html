@@ -1,0 +1,263 @@
+<lib-page-header [title]="'spk.edit_title' | translate">
+  <a [routerLink]="['/cabinet/espk', spkId]" class="link-simple">
+    {{ 'action.cancel' | translate }}
+  </a>
+</lib-page-header>
+
+@if (loading()) {
+  <p>{{ 'common.loading' | translate }}</p>
+} @else if (spk(); as s) {
+  <form (submit)="$event.preventDefault(); submit()">
+    <!-- TC name | TC cert no (readonly) -->
+    <div class="form-grid-2 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'spk.tc_name_label' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="s.tcName"
+          readonly
+        />
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'spk.tc_cert_no_label' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="s.tcCertNo"
+          readonly
+        />
+      </div>
+    </div>
+
+    <!-- Date of birth | Country of birth (readonly — edit via driver profile) -->
+    <div class="form-grid-2 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'spk.date_of_birth' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="s.dateOfBirth ? (s.dateOfBirth | date: 'dd.MM.yyyy') : ''"
+          readonly
+        />
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'spk.country_of_birth' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="s.countryOfBirth ?? ''"
+          readonly
+        />
+      </div>
+    </div>
+
+    <!-- Date of test | Carry type -->
+    <div class="form-grid-2 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'form.date_of_test' | translate }} *
+        </label>
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.dateOfTest.touched && form.controls.dateOfTest.invalid
+          "
+          type="date"
+          [formControl]="form.controls.dateOfTest"
+          placeholder="дд.мм.рррр"
+        />
+        @if (
+          form.controls.dateOfTest.touched && form.controls.dateOfTest.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.dateOfTest.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'form.carry_type' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="s.carryTypeTxt ?? ''"
+          readonly
+        />
+      </div>
+    </div>
+
+    <!-- Ministry constants (readonly — fixed at creation, Django parity) -->
+    <div class="form-grid-4 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'spk.date_miniinfra' | translate }}
+        </label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="
+            s.dateOfMiniinfra ? (s.dateOfMiniinfra | date: 'dd.MM.yyyy') : ''
+          "
+          readonly
+        />
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'spk.miniinfra_no' | translate }}
+        </label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="s.miniinfraNo ?? ''"
+          readonly
+        />
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'spk.date_minjust' | translate }}
+        </label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="s.dateOfMinjust ? (s.dateOfMinjust | date: 'dd.MM.yyyy') : ''"
+          readonly
+        />
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'spk.minjust_no' | translate }}
+        </label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="s.minjustNo ?? ''"
+          readonly
+        />
+      </div>
+    </div>
+
+    <!-- Protocol date | Protocol no -->
+    <div class="form-grid-2 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'form.date_of_test_protocol' | translate }} *
+        </label>
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.dateOfTestProtocol.touched &&
+            form.controls.dateOfTestProtocol.invalid
+          "
+          type="date"
+          [formControl]="form.controls.dateOfTestProtocol"
+          placeholder="дд.мм.рррр"
+        />
+        @if (
+          form.controls.dateOfTestProtocol.touched &&
+          form.controls.dateOfTestProtocol.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.dateOfTestProtocol.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'form.test_protocol_no' | translate }} *
+        </label>
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.testProtocolNo.touched &&
+            form.controls.testProtocolNo.invalid
+          "
+          type="text"
+          [formControl]="form.controls.testProtocolNo"
+          placeholder="00-0000"
+        />
+        @if (
+          form.controls.testProtocolNo.touched &&
+          form.controls.testProtocolNo.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.testProtocolNo.errors | fieldError
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- Expiry | Position | Chief pip -->
+    <div class="form-grid-3 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'form.date_of_expiry' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="date"
+          [formControl]="form.controls.dateOfExpiry"
+          readonly
+        />
+        <small class="text-muted">{{
+          'spk.expiry_derived_hint' | translate
+        }}</small>
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'spk.position' | translate }} *
+        </label>
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.position.touched && form.controls.position.invalid
+          "
+          type="text"
+          [formControl]="form.controls.position"
+          placeholder="Директор"
+        />
+        @if (form.controls.position.touched && form.controls.position.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.position.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'spk.chief_pip' | translate }} *
+        </label>
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.chiefPip.touched && form.controls.chiefPip.invalid
+          "
+          type="text"
+          [formControl]="form.controls.chiefPip"
+          placeholder="Прізвище Ім'я По-батькові"
+        />
+        @if (form.controls.chiefPip.touched && form.controls.chiefPip.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.chiefPip.errors | fieldError
+          }}</span>
+        }
+      </div>
+    </div>
+
+    @if (error()) {
+      <p class="text-danger mg-b-10">{{ error() }}</p>
+    }
+
+    <lib-button type="submit" [loading]="saving()">
+      {{ 'action.save' | translate }}
+    </lib-button>
+  </form>
+}

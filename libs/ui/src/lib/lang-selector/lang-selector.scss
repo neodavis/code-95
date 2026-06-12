@@ -1,0 +1,67 @@
+.lang-selector {
+  position: relative;
+  display: inline-block;
+
+  &__btn {
+    background: transparent;
+    border: 1px solid #090909;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-family: 'e-Ukraine', sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+  }
+
+  &__arrow {
+    font-size: 10px;
+    transition: transform 0.15s ease;
+  }
+
+  &--open &__arrow {
+    transform: rotate(180deg);
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    min-width: 160px;
+    overflow: hidden;
+  }
+
+  &__option {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    text-align: left;
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    font-family: 'e-Ukraine', sans-serif;
+    cursor: pointer;
+    transition: background 0.1s ease;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    &--active {
+      font-weight: 500;
+      color: #007eff;
+    }
+  }
+}

@@ -1,0 +1,120 @@
+@if (dashboard(); as d) {
+  <div class="home-grid">
+    <!-- Training center info card -->
+    <div class="home-grid__aside">
+      <lib-bordered-card direction="vertical">
+        <div class="bordered-card__item">
+          <h5>{{ d.trainingCenter.name }}</h5>
+        </div>
+        <div class="bordered-card__item">
+          <div class="info-row">
+            <span class="info-row__icon">&#9742;</span>
+            <span>{{
+              d.trainingCenter.phone ?? ('common.not_specified' | translate)
+            }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row__icon">&#9993;</span>
+            <span>{{
+              d.trainingCenter.email ?? ('common.not_specified' | translate)
+            }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row__icon">&#127760;</span>
+            <span class="info-row__value">
+              @if (d.trainingCenter.website) {
+                <a
+                  [href]="d.trainingCenter.website"
+                  [title]="d.trainingCenter.website"
+                  target="_blank"
+                  >{{ d.trainingCenter.website }}</a
+                >
+              } @else {
+                {{ 'common.not_specified' | translate }}
+              }
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-row__icon">&#128205;</span>
+            <span
+              >{{ d.trainingCenter.region
+              }}{{ d.trainingCenter.city ? ', ' + d.trainingCenter.city : ''
+              }}{{
+                d.trainingCenter.addrStreet
+                  ? ', ' + d.trainingCenter.addrStreet
+                  : ''
+              }}</span
+            >
+          </div>
+          <div class="info-row">
+            <span class="info-row__icon">&#10033;</span>
+            <span>{{ d.trainingCenter.edrpou }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-row__icon">&#10043;</span>
+            <span>{{ d.trainingCenter.certNo }}</span>
+          </div>
+        </div>
+      </lib-bordered-card>
+    </div>
+
+    <!-- Stats + recent groups -->
+    <div class="home-grid__main">
+      <lib-bordered-card
+        direction="horizontal"
+        [label]="'cabinet.stats_title' | translate"
+      >
+        <div class="bordered-card__item">
+          <h2 class="text-warning text-3xl">{{ d.stats.inEnrollment }}</h2>
+          <p>{{ 'status.planned' | translate }}</p>
+        </div>
+        <div class="bordered-card__item">
+          <h2 class="text-primary text-3xl">{{ d.stats.inProcess }}</h2>
+          <p>{{ 'status.in_progress' | translate }}</p>
+        </div>
+        <div class="bordered-card__item">
+          <h2 class="text-success text-3xl">{{ d.stats.completed }}</h2>
+          <p>{{ 'status.completed' | translate }}</p>
+        </div>
+        <div class="bordered-card__item">
+          <h2 class="text-danger text-3xl">{{ d.stats.canceled }}</h2>
+          <p>{{ 'status.cancelled' | translate }}</p>
+        </div>
+      </lib-bordered-card>
+
+      <lib-bordered-card direction="vertical" class="mg-t-30">
+        <div class="bordered-card__item">
+          <h5 class="mg-b-10">{{ 'cabinet.recent_groups' | translate }}</h5>
+          <div class="groups-header">
+            <span>{{ 'table.name' | translate }}</span>
+            <span>{{ 'cabinet.date_start' | translate }}</span>
+            <span>{{ 'table.status' | translate }}</span>
+          </div>
+        </div>
+        @for (group of d.recentGroups; track group.id) {
+          <div class="bordered-card__item">
+            <div class="groups-row">
+              <span>
+                <a [routerLink]="['/cabinet/study-groups', group.id]">{{
+                  group.name
+                }}</a>
+              </span>
+              <span>{{
+                group.dateStart
+                  ? (group.dateStart | date: 'dd.MM.yyyy')
+                  : ('common.not_specified' | translate)
+              }}</span>
+              <span [class]="statusClasses[group.status]">{{
+                statusLabels[group.status] | translate
+              }}</span>
+            </div>
+          </div>
+        } @empty {
+          <div class="bordered-card__item">
+            {{ 'cabinet.no_groups' | translate }}
+          </div>
+        }
+      </lib-bordered-card>
+    </div>
+  </div>
+}

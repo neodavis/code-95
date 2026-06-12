@@ -1,0 +1,80 @@
+<app-layout [navItems]="navItems" [footerNavItems]="footerNavItems">
+  <div class="login-card">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="login-card__row">
+        <label class="login-card__label" for="uniqueCode">{{
+          'auth.unique_code' | translate
+        }}</label>
+        <div class="login-card__field">
+          <input
+            id="uniqueCode"
+            class="login-card__input"
+            [class.e-form-group__input--invalid]="
+              form.controls.uniqueCode.touched &&
+              form.controls.uniqueCode.invalid
+            "
+            type="text"
+            [formControl]="form.controls.uniqueCode"
+            autocomplete="username"
+            placeholder="ABC-12345"
+          />
+          @if (
+            form.controls.uniqueCode.touched && form.controls.uniqueCode.invalid
+          ) {
+            <span class="e-form-group__error">{{
+              form.controls.uniqueCode.errors | fieldError
+            }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="login-card__row">
+        <label class="login-card__label" for="password">{{
+          'auth.password' | translate
+        }}</label>
+        <div class="login-card__field">
+          <input
+            id="password"
+            class="login-card__input"
+            [class.e-form-group__input--invalid]="
+              form.controls.password.touched && form.controls.password.invalid
+            "
+            type="password"
+            [formControl]="form.controls.password"
+            autocomplete="current-password"
+            placeholder="••••••"
+          />
+          @if (
+            form.controls.password.touched && form.controls.password.invalid
+          ) {
+            <span class="e-form-group__error">{{
+              form.controls.password.errors | fieldError
+            }}</span>
+          }
+        </div>
+      </div>
+
+      <!-- TODO: /auth/forgot-password route is not yet implemented -->
+      <div class="login-card__forgot">
+        <a class="login-card__forgot-link" href="/auth/forgot-password">{{
+          'auth.forgot_password' | translate
+        }}</a>
+      </div>
+
+      @if (error()) {
+        <div class="login-card__error">{{ error()! | translate }}</div>
+      }
+
+      <div class="login-card__actions">
+        <lib-button
+          type="submit"
+          variant="primary"
+          [disabled]="form.invalid"
+          [loading]="loading()"
+        >
+          {{ 'auth.sign_in' | translate }}
+        </lib-button>
+      </div>
+    </form>
+  </div>
+</app-layout>

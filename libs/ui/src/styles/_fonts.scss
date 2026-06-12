@@ -1,0 +1,130 @@
+// ============================================================
+// Font declarations — ported from Django fonts.scss
+// Django static() paths replaced with Angular /assets/ paths
+// ============================================================
+
+/* e-Ukraine */
+
+@font-face {
+  font-family: 'e-Ukraine';
+  src:
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Thin.woff2') format('woff2'),
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Thin.woff') format('woff'),
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'e-Ukraine';
+  src:
+    url('/assets/fonts/e-Ukraine/e-Ukraine-UltraLight.woff2') format('woff2'),
+    url('/assets/fonts/e-Ukraine/e-Ukraine-UltraLight.woff') format('woff'),
+    url('/assets/fonts/e-Ukraine/e-Ukraine-UltraLight.ttf') format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'e-Ukraine';
+  src:
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Light.woff2') format('woff2'),
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Light.woff') format('woff'),
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'e-Ukraine';
+  src:
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Regular.woff2') format('woff2'),
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Regular.woff') format('woff'),
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'e-Ukraine';
+  src:
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Medium.woff2') format('woff2'),
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Medium.woff') format('woff'),
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'e-Ukraine';
+  src:
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Bold.woff2') format('woff2'),
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Bold.woff') format('woff'),
+    url('/assets/fonts/e-Ukraine/e-Ukraine-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+/* e-Ukraine Head */
+
+@font-face {
+  font-family: 'e-Ukraine Head';
+  src:
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Thin.woff2') format('woff2'),
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Thin.woff') format('woff'),
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Thin.ttf') format('truetype');
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'e-Ukraine Head';
+  src:
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-UltraLight.woff2')
+      format('woff2'),
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-UltraLight.woff') format('woff'),
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-UltraLight.ttf')
+      format('truetype');
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'e-Ukraine Head';
+  src:
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Light.woff2') format('woff2'),
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Light.woff') format('woff'),
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'e-Ukraine Head';
+  src:
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Regular.woff2') format('woff2'),
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Regular.woff') format('woff'),
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'e-Ukraine Head';
+  src:
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Medium.woff2') format('woff2'),
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Medium.woff') format('woff'),
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'e-Ukraine Head';
+  src:
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Bold.woff2') format('woff2'),
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Bold.woff') format('woff'),
+    url('/assets/fonts/e-Ukraine/e-UkraineHead-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}

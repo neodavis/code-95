@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  form.max-w-\[500px\] {
+    max-width: 100%;
+  }
+
+  .e-form-group__input {
+    width: 100%;
+  }
+}

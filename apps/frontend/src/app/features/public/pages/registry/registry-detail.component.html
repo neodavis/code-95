@@ -1,0 +1,184 @@
+<lib-page-header [title]="'page.registry' | translate" />
+
+@if (loading()) {
+  <p>{{ 'common.loading' | translate }}</p>
+} @else if (notFound()) {
+  <p>{{ 'common.no_records' | translate }}</p>
+} @else if (entry(); as e) {
+  <!-- Section 1: General driver info -->
+  <h5 class="mb-3">{{ 'registry.general_info' | translate }}</h5>
+  <table class="table max-w-[700px] mb-6">
+    <tbody>
+      <tr>
+        <td>
+          <strong>{{ 'registry.driver_pip' | translate }}</strong>
+        </td>
+        <td>{{ e.driverPip || '—' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+  <!-- Section 2: Card info -->
+  <h5 class="mt-6 mb-3">{{ 'registry.card_info' | translate }}</h5>
+  <table class="table max-w-[700px] mb-4">
+    <tbody>
+      <tr>
+        <td>
+          <strong>{{ 'registry.issued_by_tc' | translate }}</strong>
+        </td>
+        <td>{{ e.atiCode || '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'table.carry_type' | translate }}</strong>
+        </td>
+        <td>{{ e.carryType || '—' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  @if (getCategories(e.categoriesList).length > 0) {
+    <table class="table max-w-[700px] mb-6">
+      <thead>
+        <tr>
+          <th>{{ 'ecard.categories_list' | translate }}</th>
+          <th>{{ 'registry.harmonized_code' | translate }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cat of getCategories(e.categoriesList); track cat) {
+          <tr>
+            <td>{{ cat }}</td>
+            <td>{{ e.unionCode95 || '—' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+
+  <hr />
+
+  <!-- Section 3: SPK certificates -->
+  <h5 class="mt-6 mb-3">{{ 'registry.spk_info' | translate }}</h5>
+
+  @for (spk of e.espks; track spk.id) {
+    <div class="bordered-card bordered-card_horizontal mb-4">
+      <div class="bordered-card__content">
+        <table class="table">
+          <tbody>
+            <tr>
+              <td>
+                <strong>{{ 'spk.tc_cert_no_label' | translate }}</strong>
+              </td>
+              <td>{{ spk.tcCertNo || '—' }}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'spk.tc_name' | translate }}</strong>
+              </td>
+              <td>{{ spk.tcName || '—' }}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'spk.date_of_test' | translate }}</strong>
+              </td>
+              <td>
+                {{
+                  spk.dateOfTest ? (spk.dateOfTest | date: 'dd.MM.yyyy') : '—'
+                }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'spk.carry_type' | translate }}</strong>
+              </td>
+              <td>{{ spk.carryTypeName || '—' }}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'spk.date_miniinfra' | translate }}</strong>
+              </td>
+              <td>
+                {{
+                  spk.dateOfMiniinfra
+                    ? (spk.dateOfMiniinfra | date: 'dd.MM.yyyy')
+                    : '—'
+                }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'spk.miniinfra_no' | translate }}</strong>
+              </td>
+              <td>{{ spk.miniinfraNo || '—' }}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'spk.date_minjust' | translate }}</strong>
+              </td>
+              <td>
+                {{
+                  spk.dateOfMinjust
+                    ? (spk.dateOfMinjust | date: 'dd.MM.yyyy')
+                    : '—'
+                }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'spk.minjust_no' | translate }}</strong>
+              </td>
+              <td>{{ spk.minjustNo || '—' }}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'form.date_of_test_protocol' | translate }}</strong>
+              </td>
+              <td>
+                {{
+                  spk.dateOfTestProtocol
+                    ? (spk.dateOfTestProtocol | date: 'dd.MM.yyyy')
+                    : '—'
+                }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'form.test_protocol_no' | translate }}</strong>
+              </td>
+              <td>{{ spk.testProtocolNo || '—' }}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'spk.date_of_expiry' | translate }}</strong>
+              </td>
+              <td>
+                {{
+                  spk.dateOfExpiry
+                    ? (spk.dateOfExpiry | date: 'dd.MM.yyyy')
+                    : '—'
+                }}
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'spk.position' | translate }}</strong>
+              </td>
+              <td>{{ spk.position || '—' }}</td>
+            </tr>
+            <tr>
+              <td>
+                <strong>{{ 'spk.chief_pip' | translate }}</strong>
+              </td>
+              <td>{{ spk.chiefPip || '—' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  } @empty {
+    <p>{{ 'common.no_records' | translate }}</p>
+  }
+}

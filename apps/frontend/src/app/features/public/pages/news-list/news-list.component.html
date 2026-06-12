@@ -1,0 +1,27 @@
+<lib-page-header [title]="'page.news' | translate" />
+<div class="news-grid mg-b-100">
+  @for (article of articles(); track article.slug) {
+    <a [routerLink]="['/news', article.slug]" class="new-item">
+      @if (article.titleImg) {
+        <img
+          class="new-item__img"
+          [src]="article.titleImg"
+          [alt]="article.title"
+        />
+      }
+      <h2 class="new-item__title">{{ article.title }}</h2>
+      <div class="new-item__content">{{ article.shortly }}</div>
+    </a>
+  } @empty {
+    @if (!loading()) {
+      <p>{{ 'common.no_records' | translate }}</p>
+    }
+  }
+</div>
+@if (totalPages() > 1) {
+  <lib-pagination
+    [currentPage]="currentPage()"
+    [totalPages]="totalPages()"
+    (pageChange)="loadPage($event)"
+  />
+}

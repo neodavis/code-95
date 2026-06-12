@@ -1,0 +1,10 @@
+:host {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

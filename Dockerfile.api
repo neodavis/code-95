@@ -1,0 +1,23 @@
+# Stage 1: Install all deps
+FROM node:20-slim AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --ignore-scripts
+
+# Stage 2: Build NestJS API via NX
+FROM deps AS builder
+COPY . .
+RUN npx nx build api --configuration=production
+
+# Stage 3: Production runtime with Chromium for puppeteer
+FROM node:20-slim AS production
+RUN apt-get update && apt-get install -y chromium --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+WORKDIR /app
+COPY --from=builder /app/dist/apps/api ./
+RUN npm ci --omit=dev --ignore-scripts
+COPY scripts/ ./scripts/
+EXPOSE 3000
+CMD ["node", "main.js"]

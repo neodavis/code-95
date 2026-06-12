@@ -1,0 +1,61 @@
+<lib-page-header
+  [title]="
+    (isEdit ? 'page.edit_carry_type' : 'page.new_carry_type') | translate
+  "
+/>
+<div class="admin-form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="e-form-group">
+      <label class="e-form-group__label" for="name">{{
+        'form.name' | translate
+      }}</label>
+      <input
+        id="name"
+        class="e-form-group__input"
+        [class.e-form-group__input--invalid]="
+          form.controls.name.touched && form.controls.name.invalid
+        "
+        [formControl]="form.controls.name"
+        type="text"
+        maxlength="200"
+        placeholder="Напр.: Вантажно-автомобільні (називний відмінок)"
+      />
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+        <span class="e-form-group__error">{{
+          form.controls.name.errors | fieldError
+        }}</span>
+      }
+    </div>
+    <div class="e-form-group">
+      <label class="e-form-group__label" for="nameSpk">{{
+        'form.name_spk' | translate
+      }}</label>
+      <input
+        id="nameSpk"
+        class="e-form-group__input"
+        [formControl]="form.controls.nameSpk"
+        type="text"
+        maxlength="200"
+        placeholder="Напр.: вантажних автомобільних (родовий: «послуг з ___ перевезень»)"
+      />
+    </div>
+    @if (error()) {
+      <div class="e-form-group__error mb-4">
+        {{ error() }}
+      </div>
+    }
+    <div class="admin-form__actions">
+      <lib-button
+        type="submit"
+        variant="primary"
+        [disabled]="form.invalid"
+        [loading]="saving()"
+      >
+        {{ 'action.save' | translate }}
+      </lib-button>
+      <a routerLink="/backend/carry-types" class="link-simple">{{
+        'action.cancel' | translate
+      }}</a>
+    </div>
+  </form>
+</div>

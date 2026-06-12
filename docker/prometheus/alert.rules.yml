@@ -1,0 +1,51 @@
+groups:
+  - name: code95-api
+    rules:
+      - alert: ApiDown
+        expr: up{job="api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: 'API is down'
+          description: 'The code-95 API has been unreachable for more than 1 minute.'
+
+      - alert: ApiHighResponseTime
+        expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job="api"}[5m])) by (le)) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'API p95 response time > 500ms'
+          description: '95th percentile response time has exceeded 500ms for 5 minutes.'
+
+      - alert: ApiHighErrorRate
+        expr: sum(rate(http_requests_total{job="api",status_code=~"5.."}[5m])) / sum(rate(http_requests_total{job="api"}[5m])) > 0.01
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'API 5xx error rate > 1%'
+          description: 'The ratio of 5xx responses has exceeded 1% for 5 minutes.'
+
+  - name: code95-postgres
+    rules:
+      - alert: PostgresDown
+        expr: up{job="postgres"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: 'PostgreSQL exporter is down'
+          description: 'The postgres-exporter has been unreachable for more than 1 minute.'
+
+  - name: code95-system
+    rules:
+      - alert: DiskSpaceHigh
+        expr: (node_filesystem_size_bytes - node_filesystem_free_bytes) / node_filesystem_size_bytes > 0.85
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: 'Disk usage > 85%'
+          description: 'Filesystem usage on {{ $labels.mountpoint }} has exceeded 85%.'

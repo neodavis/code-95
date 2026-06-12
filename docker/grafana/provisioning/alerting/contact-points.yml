@@ -1,0 +1,12 @@
+apiVersion: 1
+
+contactPoints:
+  - orgId: 1
+    name: code95-ops
+    receivers:
+      - uid: code95-webhook
+        type: webhook
+        settings:
+          url: 'http://localhost:8080/alert'
+          httpMethod: POST
+        disableResolveMessage: false

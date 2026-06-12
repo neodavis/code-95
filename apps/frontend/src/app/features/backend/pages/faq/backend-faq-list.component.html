@@ -1,0 +1,52 @@
+<lib-page-header [title]="'admin.faq' | translate">
+  <a routerLink="create" class="link-black link-black_success">{{
+    'action.add_faq' | translate
+  }}</a>
+</lib-page-header>
+
+<lib-data-table
+  [items]="items()"
+  [loading]="loading()"
+  [currentPage]="currentPage()"
+  [totalPages]="totalPages()"
+  [sortColumn]="sortColumn()"
+  [sortOrder]="sortOrder()"
+  (sortChange)="toggleSort($event)"
+  (searchChange)="onSearchInput($event)"
+  (pageChange)="loadPage($event)"
+>
+  <ng-template
+    libColumn="question"
+    header="table.question"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.question }}
+  </ng-template>
+  <ng-template
+    libColumn="isPublished"
+    header="table.published"
+    [sortable]="true"
+    let-item
+  >
+    {{
+      item.isPublished ? ('common.yes' | translate) : ('common.no' | translate)
+    }}
+  </ng-template>
+  <ng-template
+    libColumn="actions"
+    header="table.actions"
+    tdClass="table-actions"
+    [ellipsis]="false"
+    let-item
+  >
+    <a
+      [routerLink]="[item.id, 'edit']"
+      class="link-simple link-simple_primary"
+      >{{ 'action.edit' | translate }}</a
+    >
+    <button (click)="delete(item)" class="link-simple link-simple_danger">
+      {{ 'action.delete' | translate }}
+    </button>
+  </ng-template>
+</lib-data-table>

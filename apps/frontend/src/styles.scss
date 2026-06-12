@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@source '../app';
+@source '../../../libs/ui/src/lib';
+@import 'index';
+@import 'intl-tel-input/build/css/intlTelInput.css';
+@import 'quill/dist/quill.snow.css';

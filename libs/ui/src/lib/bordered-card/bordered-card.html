@@ -1,0 +1,10 @@
+<div class="bordered-card-wrap" [class.!rounded-tr-none]="label?.length">
+  @if (label) {
+  <span class="bordered-card-wrap__label">{{ label }}</span>
+  }
+  <div
+    [ngClass]="['bordered-card', direction === 'horizontal' ? 'bordered-card_horizontal' : 'bordered-card_veritical']"
+  >
+    <ng-content />
+  </div>
+</div>

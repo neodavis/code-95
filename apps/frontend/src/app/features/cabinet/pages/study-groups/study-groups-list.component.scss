@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .table-actions,
+  td .table-actions {
+    flex-wrap: wrap;
+    white-space: normal;
+    gap: 4px 8px;
+  }
+}

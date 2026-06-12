@@ -1,0 +1,16 @@
+<div class="e-form-group">
+  @if (label) {
+  <label class="e-form-group__label">{{ label }}</label>
+  }
+  <input
+    class="e-form-group__input form-control"
+    [type]="type"
+    [placeholder]="placeholder"
+    [value]="value"
+    (input)="onInput($event)"
+    (blur)="onTouched()"
+  />
+  @if (errorMessage) {
+  <span class="e-form-group__error">{{ errorMessage }}</span>
+  }
+</div>

@@ -1,0 +1,68 @@
+<lib-page-header [title]="'admin.articles' | translate">
+  <a routerLink="create" class="link-black link-black_success">{{
+    'action.add_article' | translate
+  }}</a>
+</lib-page-header>
+
+<lib-data-table
+  [items]="items()"
+  [loading]="loading()"
+  [currentPage]="currentPage()"
+  [totalPages]="totalPages()"
+  [sortColumn]="sortColumn()"
+  [sortOrder]="sortOrder()"
+  (sortChange)="toggleSort($event)"
+  (searchChange)="onSearchInput($event)"
+  (pageChange)="loadPage($event)"
+>
+  <ng-template
+    libColumn="title"
+    header="table.title"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.title }}
+  </ng-template>
+  <ng-template
+    libColumn="author"
+    header="table.author"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.author }}
+  </ng-template>
+  <ng-template
+    libColumn="pubDate"
+    header="table.pub_date"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.pubDate | date: 'dd.MM.yyyy' }}
+  </ng-template>
+  <ng-template
+    libColumn="isPublished"
+    header="table.published"
+    [sortable]="true"
+    let-item
+  >
+    {{
+      item.isPublished ? ('common.yes' | translate) : ('common.no' | translate)
+    }}
+  </ng-template>
+  <ng-template
+    libColumn="actions"
+    header="table.actions"
+    tdClass="table-actions"
+    [ellipsis]="false"
+    let-item
+  >
+    <a
+      [routerLink]="[item.id, 'edit']"
+      class="link-simple link-simple_primary"
+      >{{ 'action.edit' | translate }}</a
+    >
+    <button (click)="delete(item)" class="link-simple link-simple_danger">
+      {{ 'action.delete' | translate }}
+    </button>
+  </ng-template>
+</lib-data-table>

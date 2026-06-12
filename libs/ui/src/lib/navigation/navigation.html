@@ -1,0 +1,14 @@
+<nav class="e-nav">
+  @for (item of items; track item.route) {
+  <a
+    class="e-nav__item"
+    [routerLink]="item.route"
+    routerLinkActive="active"
+    [routerLinkActiveOptions]="{ exact: item.route === '/' }"
+  >
+    @if (item.icon) {
+    <i class="e-nav__item_icon {{ item.icon }}"></i>
+    } {{ item.label | translate }}
+  </a>
+  }
+</nav>

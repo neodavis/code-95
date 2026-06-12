@@ -1,0 +1,14 @@
+:host {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  .admin-form {
+    max-width: 100%;
+  }
+
+  .admin-form__actions {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}

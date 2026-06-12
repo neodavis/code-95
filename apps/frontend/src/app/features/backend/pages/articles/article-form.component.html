@@ -1,0 +1,195 @@
+<lib-page-header
+  [title]="(isEdit ? 'page.edit_article' : 'page.new_article') | translate"
+/>
+
+<div class="admin-form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="admin-form-grid">
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="title">{{
+          'form.title' | translate
+        }}</label>
+        <input
+          id="title"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.title.touched && form.controls.title.invalid
+          "
+          [formControl]="form.controls.title"
+          type="text"
+          placeholder="Заголовок статті"
+        />
+        @if (form.controls.title.touched && form.controls.title.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.title.errors | fieldError
+          }}</span>
+        }
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="author">{{
+          'form.author' | translate
+        }}</label>
+        <input
+          id="author"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.author.touched && form.controls.author.invalid
+          "
+          [formControl]="form.controls.author"
+          type="text"
+          placeholder="Автор"
+        />
+        @if (form.controls.author.touched && form.controls.author.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.author.errors | fieldError
+          }}</span>
+        }
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="pubDate">{{
+          'form.pub_date' | translate
+        }}</label>
+        <input
+          id="pubDate"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.pubDate.touched && form.controls.pubDate.invalid
+          "
+          [formControl]="form.controls.pubDate"
+          type="datetime-local"
+          placeholder="дд.мм.рррр"
+        />
+        @if (form.controls.pubDate.touched && form.controls.pubDate.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.pubDate.errors | fieldError
+          }}</span>
+        }
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="titleImg">{{
+          'form.image_url' | translate
+        }}</label>
+        <input
+          id="titleImg"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.titleImg.touched && form.controls.titleImg.invalid
+          "
+          [formControl]="form.controls.titleImg"
+          type="text"
+          placeholder="https://..."
+        />
+        @if (form.controls.titleImg.touched && form.controls.titleImg.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.titleImg.errors | fieldError
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="e-form-group">
+      <label class="e-form-group__label" for="shortly">{{
+        'form.short_description' | translate
+      }}</label>
+      <input
+        id="shortly"
+        class="e-form-group__input"
+        [class.e-form-group__input--invalid]="
+          form.controls.shortly.touched && form.controls.shortly.invalid
+        "
+        [formControl]="form.controls.shortly"
+        type="text"
+        placeholder="Короткий опис"
+      />
+      @if (form.controls.shortly.touched && form.controls.shortly.invalid) {
+        <span class="e-form-group__error">{{
+          form.controls.shortly.errors | fieldError
+        }}</span>
+      }
+    </div>
+
+    <div class="e-form-group">
+      <label class="e-form-group__label" for="description">{{
+        'form.full_text' | translate
+      }}</label>
+      <quill-editor
+        id="description"
+        [formControl]="form.controls.description"
+        [modules]="{
+          toolbar: [
+            ['bold', 'italic', 'underline'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['link'],
+            [{ header: [2, 3, false] }],
+          ],
+        }"
+      ></quill-editor>
+    </div>
+
+    <div class="e-form-group">
+      <label>
+        <input type="checkbox" [formControl]="form.controls.isPublished" />
+        {{ 'form.published' | translate }}
+      </label>
+    </div>
+
+    @if (categories().length) {
+      <div class="e-form-group">
+        <p class="e-form-group__label">{{ 'form.categories' | translate }}</p>
+        <div class="admin-form-checkboxes">
+          @for (cat of categories(); track cat.id) {
+            <label class="admin-form-checkboxes__item">
+              <input
+                type="checkbox"
+                [checked]="isCategorySelected(cat.id)"
+                (change)="toggleCategory(cat.id)"
+              />
+              {{ cat.name }}
+            </label>
+          }
+        </div>
+      </div>
+    }
+
+    @if (tags().length) {
+      <div class="e-form-group">
+        <p class="e-form-group__label">{{ 'form.tags' | translate }}</p>
+        <div class="admin-form-checkboxes">
+          @for (tag of tags(); track tag.id) {
+            <label class="admin-form-checkboxes__item">
+              <input
+                type="checkbox"
+                [checked]="isTagSelected(tag.id)"
+                (change)="toggleTag(tag.id)"
+              />
+              {{ tag.name }}
+            </label>
+          }
+        </div>
+      </div>
+    }
+
+    @if (error()) {
+      <div class="e-form-group__error mb-4">
+        {{ error() }}
+      </div>
+    }
+
+    <div class="admin-form__actions">
+      <lib-button
+        type="submit"
+        variant="primary"
+        [disabled]="form.invalid"
+        [loading]="saving()"
+      >
+        {{ 'action.save' | translate }}
+      </lib-button>
+      <a routerLink="/backend/articles" class="link-simple">{{
+        'action.cancel' | translate
+      }}</a>
+    </div>
+  </form>
+</div>

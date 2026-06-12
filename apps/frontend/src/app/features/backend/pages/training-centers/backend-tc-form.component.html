@@ -1,0 +1,387 @@
+<lib-page-header
+  [title]="(isEdit ? 'page.edit_tc' : 'page.new_tc') | translate"
+/>
+
+<div class="admin-form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <p class="admin-form__section-title">
+      {{ 'section.main_info' | translate }}
+    </p>
+    <div class="admin-form-grid">
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="name">{{
+          'form.full_name' | translate
+        }}</label>
+        <input
+          id="name"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.name.touched && form.controls.name.invalid
+          "
+          [formControl]="form.controls.name"
+          type="text"
+          maxlength="200"
+          placeholder="Назва"
+        />
+        @if (form.controls.name.touched && form.controls.name.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.name.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="nameShort">{{
+          'form.short_name' | translate
+        }}</label>
+        <input
+          id="nameShort"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.nameShort.touched && form.controls.nameShort.invalid
+          "
+          [formControl]="form.controls.nameShort"
+          type="text"
+          maxlength="60"
+          placeholder="Скорочена назва"
+        />
+        @if (
+          form.controls.nameShort.touched && form.controls.nameShort.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.nameShort.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="edrpou">{{
+          'form.edrpou' | translate
+        }}</label>
+        <input
+          id="edrpou"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.edrpou.touched && form.controls.edrpou.invalid
+          "
+          [formControl]="form.controls.edrpou"
+          type="text"
+          maxlength="10"
+          placeholder="00000000"
+          mask="00000000"
+        />
+        @if (form.controls.edrpou.touched && form.controls.edrpou.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.edrpou.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="chiefPip">{{
+          'form.chief_pip' | translate
+        }}</label>
+        <input
+          id="chiefPip"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.chiefPip.touched && form.controls.chiefPip.invalid
+          "
+          [formControl]="form.controls.chiefPip"
+          type="text"
+          maxlength="50"
+          placeholder="Прізвище Ім'я По-батькові"
+        />
+        @if (form.controls.chiefPip.touched && form.controls.chiefPip.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.chiefPip.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="atiCode">{{
+          'form.ati_code' | translate
+        }}</label>
+        <input
+          id="atiCode"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.atiCode.touched && form.controls.atiCode.invalid
+          "
+          [formControl]="form.controls.atiCode"
+          type="text"
+          maxlength="4"
+          placeholder="0000"
+        />
+        @if (form.controls.atiCode.touched && form.controls.atiCode.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.atiCode.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="division">{{
+          'form.division' | translate
+        }}</label>
+        <input
+          id="division"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.division.touched && form.controls.division.invalid
+          "
+          [formControl]="form.controls.division"
+          type="text"
+          maxlength="20"
+          placeholder="Підрозділ"
+        />
+        @if (form.controls.division.touched && form.controls.division.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.division.errors | fieldError
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <p class="admin-form__section-title">
+      {{ 'section.certificate' | translate }}
+    </p>
+    <div class="admin-form-grid">
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="certNo">{{
+          'form.cert_no' | translate
+        }}</label>
+        <input
+          id="certNo"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.certNo.touched && form.controls.certNo.invalid
+          "
+          [formControl]="form.controls.certNo"
+          type="text"
+          maxlength="9"
+          placeholder="XX-000000"
+        />
+        @if (form.controls.certNo.touched && form.controls.certNo.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.certNo.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="certDate">{{
+          'form.cert_date' | translate
+        }}</label>
+        <input
+          id="certDate"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.certDate.touched && form.controls.certDate.invalid
+          "
+          [formControl]="form.controls.certDate"
+          type="date"
+          placeholder="дд.мм.рррр"
+        />
+        @if (form.controls.certDate.touched && form.controls.certDate.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.certDate.errors | fieldError
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <p class="admin-form__section-title">
+      {{ 'section.address_contacts' | translate }}
+    </p>
+    <div class="admin-form-grid">
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="region">{{
+          'form.region' | translate
+        }}</label>
+        <input
+          id="region"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.region.touched && form.controls.region.invalid
+          "
+          [formControl]="form.controls.region"
+          type="text"
+          maxlength="50"
+          placeholder="Область"
+        />
+        @if (form.controls.region.touched && form.controls.region.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.region.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="city">{{
+          'form.city' | translate
+        }}</label>
+        <input
+          id="city"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.city.touched && form.controls.city.invalid
+          "
+          [formControl]="form.controls.city"
+          type="text"
+          maxlength="50"
+          placeholder="Місто"
+        />
+        @if (form.controls.city.touched && form.controls.city.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.city.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="addrStreet">{{
+          'form.street' | translate
+        }}</label>
+        <input
+          id="addrStreet"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.addrStreet.touched && form.controls.addrStreet.invalid
+          "
+          [formControl]="form.controls.addrStreet"
+          type="text"
+          maxlength="50"
+          placeholder="вул. Хрещатик"
+        />
+        @if (
+          form.controls.addrStreet.touched && form.controls.addrStreet.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.addrStreet.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="addrHouse">{{
+          'form.house' | translate
+        }}</label>
+        <input
+          id="addrHouse"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.addrHouse.touched && form.controls.addrHouse.invalid
+          "
+          [formControl]="form.controls.addrHouse"
+          type="text"
+          maxlength="7"
+          placeholder="1А"
+        />
+        @if (
+          form.controls.addrHouse.touched && form.controls.addrHouse.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.addrHouse.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="postCode">{{
+          'form.post_code' | translate
+        }}</label>
+        <input
+          id="postCode"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.postCode.touched && form.controls.postCode.invalid
+          "
+          [formControl]="form.controls.postCode"
+          type="text"
+          maxlength="5"
+          placeholder="00000"
+          mask="00000"
+        />
+        @if (form.controls.postCode.touched && form.controls.postCode.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.postCode.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'form.phone' | translate
+        }}</label>
+        <lib-phone-input
+          [formControl]="form.controls.phone"
+          [invalid]="form.controls.phone.touched && form.controls.phone.invalid"
+        />
+        @if (form.controls.phone.touched && form.controls.phone.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.phone.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="email">{{
+          'form.email' | translate
+        }}</label>
+        <input
+          id="email"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.email.touched && form.controls.email.invalid
+          "
+          [formControl]="form.controls.email"
+          type="email"
+          maxlength="100"
+          placeholder="example@email.com"
+        />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.email.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="website">{{
+          'form.website' | translate
+        }}</label>
+        <input
+          id="website"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.website.touched && form.controls.website.invalid
+          "
+          [formControl]="form.controls.website"
+          type="url"
+          maxlength="200"
+          placeholder="https://example.com"
+        />
+        @if (form.controls.website.touched && form.controls.website.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.website.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group pt-7">
+        <label>
+          <input type="checkbox" [formControl]="form.controls.isActive" />
+          {{ 'form.active' | translate }}
+        </label>
+      </div>
+    </div>
+
+    @if (error()) {
+      <div class="e-form-group__error mb-4">
+        {{ error() }}
+      </div>
+    }
+
+    <div class="admin-form__actions">
+      <lib-button
+        type="submit"
+        variant="primary"
+        [disabled]="form.invalid"
+        [loading]="saving()"
+      >
+        {{ 'action.save' | translate }}
+      </lib-button>
+      <a routerLink="/backend/training-centers" class="link-simple">{{
+        'action.cancel' | translate
+      }}</a>
+    </div>
+  </form>
+</div>

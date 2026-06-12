@@ -1,0 +1,64 @@
+<lib-page-header [title]="'admin.training_centers' | translate">
+  <a routerLink="create" class="link-black link-black_success">{{
+    'action.add_tc' | translate
+  }}</a>
+</lib-page-header>
+
+<lib-data-table
+  [items]="items()"
+  [loading]="loading()"
+  [currentPage]="currentPage()"
+  [totalPages]="totalPages()"
+  [sortColumn]="sortColumn()"
+  [sortOrder]="sortOrder()"
+  (sortChange)="toggleSort($event)"
+  (searchChange)="onSearchInput($event)"
+  (pageChange)="loadPage($event)"
+>
+  <ng-template libColumn="name" header="table.name" [sortable]="true" let-item>
+    {{ item.name }}
+  </ng-template>
+  <ng-template
+    libColumn="edrpou"
+    header="table.edrpou"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.edrpou }}
+  </ng-template>
+  <ng-template
+    libColumn="region"
+    header="table.region"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.region || '—' }}
+  </ng-template>
+  <ng-template libColumn="city" header="table.city" [sortable]="true" let-item>
+    {{ item.city }}
+  </ng-template>
+  <ng-template
+    libColumn="email"
+    header="table.email"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.email || '—' }}
+  </ng-template>
+  <ng-template
+    libColumn="actions"
+    header="table.actions"
+    tdClass="table-actions"
+    [ellipsis]="false"
+    let-item
+  >
+    <a
+      [routerLink]="[item.id, 'edit']"
+      class="link-simple link-simple_primary"
+      >{{ 'action.edit' | translate }}</a
+    >
+    <button (click)="delete(item)" class="link-simple link-simple_danger">
+      {{ 'action.delete' | translate }}
+    </button>
+  </ng-template>
+</lib-data-table>

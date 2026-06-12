@@ -1,0 +1,211 @@
+// ============================================================
+// Form & button styles — exact port of Django forms.scss
+// ============================================================
+
+@keyframes granimate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.e-button {
+  font-weight: var(--button-font-weight);
+  font-size: var(--button-font-size);
+  border-radius: var(--button-border-radius);
+  display: inline-block;
+  padding: var(--button-padding-y) var(--button-padding-x);
+  vertical-align: middle;
+  line-height: normal;
+  text-align: center;
+  border: 1px solid transparent;
+  position: relative;
+  cursor: pointer;
+
+  &_primary {
+    background: var(--color-black);
+    color: var(--color-white);
+    transition: none;
+
+    &:hover {
+      background: transparent;
+      color: black;
+      background-image: var(--gradient-button-hover);
+      background-size: 200% 300%;
+      animation: 15s infinite granimate;
+    }
+  }
+
+  &_plain {
+    border: 1px solid black;
+    color: black;
+    padding-top: calc(var(--button-padding-y) - 1px);
+    padding-bottom: calc(var(--button-padding-y) - 1px);
+
+    &:hover {
+      background-color: black;
+      color: white;
+    }
+  }
+}
+
+.link-black {
+  color: black;
+  cursor: pointer;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  padding: 0;
+
+  &__icon {
+    font-size: 16px;
+    margin-right: 8px;
+  }
+
+  &:hover {
+    color: black;
+  }
+
+  &_primary:hover {
+    color: var(--color-blue);
+  }
+  &_success:hover {
+    color: var(--color-success);
+  }
+  &_warning:hover {
+    color: var(--color-warning);
+  }
+  &_danger:hover {
+    color: var(--color-danger);
+  }
+}
+
+.link-simple {
+  border-radius: var(--radius-lg);
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 23px;
+  padding: 4px 8px;
+  cursor: pointer;
+  display: inline-block;
+  background-color: transparent;
+  border: none;
+
+  &:hover {
+    background-color: #f1f1f1;
+  }
+
+  &_primary {
+    color: var(--color-blue) !important;
+    &:hover {
+      background-color: #d9ecff;
+    }
+  }
+
+  &_success {
+    color: var(--color-success) !important;
+    &:hover {
+      background-color: #d9f6e7;
+    }
+  }
+
+  &_warning {
+    color: var(--color-warning) !important;
+    &:hover {
+      background-color: #ffecdd;
+    }
+  }
+
+  &_danger {
+    color: var(--color-danger-alt) !important;
+    &:hover {
+      background-color: #dcbdc0;
+    }
+  }
+}
+
+// Inline button spinner
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: btn-spin 0.6s linear infinite;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+// Disabled state for buttons & links
+.e-button:disabled,
+.e-button.disabled,
+.link-simple:disabled,
+.link-simple.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+// Form group
+.e-form-group {
+  margin-bottom: 16px;
+
+  &__label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  &__input {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 14px;
+    font-family: var(--font-body);
+    border: 1px solid #ced4da;
+    border-radius: var(--radius-md);
+    background-color: var(--color-white);
+    transition: border-color 0.15s ease-in-out;
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-black);
+      box-shadow: 0 0 0 2px rgba(9, 9, 9, 0.15);
+    }
+
+    &[readonly] {
+      background-color: #f5f5f5;
+      pointer-events: none;
+    }
+  }
+
+  &__input--invalid {
+    border-color: var(--color-danger);
+    &:focus {
+      box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.15);
+    }
+  }
+
+  &__error {
+    display: block;
+    margin-top: 4px;
+    font-size: 12px;
+    color: var(--color-danger);
+  }
+}

@@ -1,0 +1,92 @@
+<lib-page-header [title]="'admin.users' | translate">
+  <a routerLink="create" class="link-black link-black_success">{{
+    'action.add_user' | translate
+  }}</a>
+</lib-page-header>
+
+<lib-data-table
+  [items]="items()"
+  [loading]="loading()"
+  [currentPage]="currentPage()"
+  [totalPages]="totalPages()"
+  [sortColumn]="sortColumn()"
+  [sortOrder]="sortOrder()"
+  (sortChange)="toggleSort($event)"
+  (searchChange)="onSearchInput($event)"
+  (pageChange)="loadPage($event)"
+>
+  <ng-template
+    libColumn="uniqueCode"
+    header="table.unique_code"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.uniqueCode }}
+  </ng-template>
+  <ng-template
+    libColumn="lastName"
+    header="table.pip"
+    [sortable]="true"
+    let-item
+  >
+    {{ fullName(item) }}
+  </ng-template>
+  <ng-template
+    libColumn="email"
+    header="table.email"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.email || '—' }}
+  </ng-template>
+  <ng-template
+    libColumn="phone"
+    header="table.phone"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.phone || '—' }}
+  </ng-template>
+  <ng-template
+    libColumn="isStaff"
+    header="form.is_staff"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.isStaff ? ('common.yes' | translate) : ('common.no' | translate) }}
+  </ng-template>
+  <ng-template
+    libColumn="isSuperuser"
+    header="form.is_superuser"
+    [sortable]="true"
+    let-item
+  >
+    {{
+      item.isSuperuser ? ('common.yes' | translate) : ('common.no' | translate)
+    }}
+  </ng-template>
+  <ng-template
+    libColumn="isActive"
+    header="table.active"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.isActive ? ('common.yes' | translate) : ('common.no' | translate) }}
+  </ng-template>
+  <ng-template
+    libColumn="actions"
+    header="table.actions"
+    tdClass="table-actions"
+    [ellipsis]="false"
+    let-item
+  >
+    <a
+      [routerLink]="[item.id, 'edit']"
+      class="link-simple link-simple_primary"
+      >{{ 'action.edit' | translate }}</a
+    >
+    <button (click)="deactivate(item)" class="link-simple link-simple_danger">
+      {{ 'action.delete' | translate }}
+    </button>
+  </ng-template>
+</lib-data-table>

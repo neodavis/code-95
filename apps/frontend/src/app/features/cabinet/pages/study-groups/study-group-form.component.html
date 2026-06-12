@@ -1,0 +1,118 @@
+<lib-page-header
+  [title]="
+    (isEdit ? 'page.edit_study_group' : 'page.new_study_group') | translate
+  "
+/>
+
+<form [formGroup]="form" (ngSubmit)="submit()" class="admin-form">
+  <div class="e-form-group">
+    <label class="e-form-group__label"
+      >{{ 'form.name' | translate }} *</label
+    >
+    <input
+      [formControl]="form.controls.name"
+      class="e-form-group__input"
+      [class.e-form-group__input--invalid]="
+        form.controls.name.touched && form.controls.name.invalid
+      "
+      type="text"
+      placeholder="Назва групи"
+    />
+    @if (form.controls.name.touched && form.controls.name.invalid) {
+      <span class="e-form-group__error">{{
+        form.controls.name.errors | fieldError
+      }}</span>
+    }
+  </div>
+
+  <div class="e-form-group">
+    <label class="e-form-group__label"
+      >{{ 'form.carry_type' | translate }} *</label
+    >
+    <select
+      [formControl]="form.controls.carryTypeId"
+      class="e-form-group__input"
+    >
+      <option [ngValue]="null" disabled>—</option>
+      @for (ct of carryTypes(); track ct.id) {
+        <option [ngValue]="ct.id">{{ ct.name }}</option>
+      }
+    </select>
+  </div>
+
+  <div class="e-form-group">
+    <label class="e-form-group__label"
+      >{{ 'form.course_type' | translate }} *</label
+    >
+    <select
+      [formControl]="form.controls.courseType"
+      class="e-form-group__input"
+    >
+      <option [ngValue]="null" disabled>—</option>
+      <option [ngValue]="CourseType.INITIAL">
+        {{ 'course_type.initial' | translate }}
+      </option>
+      <option [ngValue]="CourseType.INITIAL_SHORTENED">
+        {{ 'course_type.initial_shortened' | translate }}
+      </option>
+      <option [ngValue]="CourseType.PERIODIC">
+        {{ 'course_type.periodic' | translate }}
+      </option>
+    </select>
+  </div>
+
+  <div class="e-form-group">
+    <label class="e-form-group__label"
+      >{{ 'cabinet.date_start' | translate }} *</label
+    >
+    <input
+      [formControl]="form.controls.dateStart"
+      class="e-form-group__input"
+      [class.e-form-group__input--invalid]="
+        form.controls.dateStart.touched && form.controls.dateStart.invalid
+      "
+      type="date"
+      placeholder="дд.мм.рррр"
+    />
+    @if (form.controls.dateStart.touched && form.controls.dateStart.invalid) {
+      <span class="e-form-group__error">{{
+        form.controls.dateStart.errors | fieldError
+      }}</span>
+    }
+  </div>
+
+  <div class="e-form-group">
+    <label class="e-form-group__label"
+      >{{ 'cabinet.date_finish' | translate }} *</label
+    >
+    <input
+      [formControl]="form.controls.dateFinish"
+      class="e-form-group__input"
+      [class.e-form-group__input--invalid]="
+        form.controls.dateFinish.touched && form.controls.dateFinish.invalid
+      "
+      type="date"
+      placeholder="дд.мм.рррр"
+    />
+    @if (form.controls.dateFinish.touched && form.controls.dateFinish.invalid) {
+      <span class="e-form-group__error">{{
+        form.controls.dateFinish.errors | fieldError
+      }}</span>
+    }
+  </div>
+
+  @if (error()) {
+    <div class="e-form-group__error mb-4">
+      {{ error() }}
+    </div>
+  }
+
+  <div class="admin-form__actions">
+    <lib-button type="submit" [loading]="saving()" [disabled]="form.invalid">
+      {{ 'action.save' | translate }}
+    </lib-button>
+    <a routerLink="/cabinet/study-groups" class="link-simple mg-l-15">
+      {{ 'action.cancel' | translate }}
+    </a>
+  </div>
+</form>

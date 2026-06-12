@@ -1,0 +1,146 @@
+@if (card(); as c) {
+  <lib-page-header [title]="'eCard № ' + (c.serialNo ?? c.id)">
+    <a [routerLink]="['/cabinet/ecards', c.id, 'edit']" class="link-simple">
+      {{ 'action.edit' | translate }}
+    </a>
+  </lib-page-header>
+
+  <table class="table max-w-[700px]">
+    <tbody>
+      <tr>
+        <td>
+          <strong>{{ 'form.photo' | translate }}</strong>
+        </td>
+        <td>
+          @if (c.photoImg) {
+            <img
+              [src]="c.photoImg"
+              alt="photo"
+              class="max-h-[120px] border border-[#ddd] rounded"
+            />
+          } @else {
+            —
+          }
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'ecard.surname_bilingual' | translate }}</strong>
+        </td>
+        <td>
+          <a
+            [routerLink]="['/cabinet/drivers', c.driverId]"
+            class="link-simple -ms-2"
+          >
+            {{ c.surname }} / {{ c.surnameTranslit }}
+          </a>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'ecard.first_name_bilingual' | translate }}</strong>
+        </td>
+        <td>{{ c.firstName }} / {{ c.firstNameTranslit }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'ecard.date_of_birth' | translate }}</strong>
+        </td>
+        <td>
+          {{ c.dateOfBirth ? (c.dateOfBirth | date: 'dd.MM.yyyy') : '—' }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'ecard.serial_no' | translate }}</strong>
+        </td>
+        <td>{{ c.serialNo ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'ecard.date_of_issue' | translate }}</strong>
+        </td>
+        <td>
+          {{ c.dateOfIssue ? (c.dateOfIssue | date: 'dd.MM.yyyy') : '—' }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'ecard.date_of_expiry' | translate }}</strong>
+        </td>
+        <td>
+          {{ c.dateOfExpiry ? (c.dateOfExpiry | date: 'dd.MM.yyyy') : '—' }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'ecard.issued_by' | translate }}</strong>
+        </td>
+        <td>{{ c.issuedBy ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'ecard.licence_no' | translate }}</strong>
+        </td>
+        <td>{{ c.licenceNo ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'ecard.categories_list' | translate }}</strong>
+        </td>
+        <td>{{ c.categoriesList ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'ecard.union_code95' | translate }}</strong>
+        </td>
+        <td>{{ c.unionCode95 ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'ecard.qr_code' | translate }}</strong>
+        </td>
+        <td>
+          @if (c.qrImg) {
+            <img
+              [src]="c.qrImg"
+              alt="QR"
+              class="max-h-[120px] border border-[#ddd] rounded"
+            />
+          } @else {
+            —
+          }
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'form.signature' | translate }}</strong>
+        </td>
+        <td>
+          @if (c.signImg) {
+            <img
+              [src]="c.signImg"
+              alt="signature"
+              class="max-h-[120px] border border-[#ddd] rounded"
+            />
+          } @else {
+            —
+          }
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  @if (c.qrImg) {
+    <hr class="my-4 max-w-[700px]" />
+    <a
+      [href]="c.qrImg"
+      download
+      class="link-simple"
+    >
+      {{ 'ecard.download_qr_png' | translate }}
+    </a>
+  }
+} @else if (loading()) {
+  <p>{{ 'common.loading' | translate }}</p>
+}

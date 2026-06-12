@@ -1,0 +1,45 @@
+<lib-page-header
+  [title]="(isEdit ? 'page.edit_tag' : 'page.new_tag') | translate"
+/>
+<div class="admin-form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="e-form-group">
+      <label class="e-form-group__label" for="name">{{
+        'form.name' | translate
+      }}</label>
+      <input
+        id="name"
+        class="e-form-group__input"
+        [class.e-form-group__input--invalid]="
+          form.controls.name.touched && form.controls.name.invalid
+        "
+        [formControl]="form.controls.name"
+        type="text"
+        placeholder="Назва"
+      />
+      @if (form.controls.name.touched && form.controls.name.invalid) {
+        <span class="e-form-group__error">{{
+          form.controls.name.errors | fieldError
+        }}</span>
+      }
+    </div>
+    @if (error()) {
+      <div class="e-form-group__error mb-4">
+        {{ error() }}
+      </div>
+    }
+    <div class="admin-form__actions">
+      <lib-button
+        type="submit"
+        variant="primary"
+        [disabled]="form.invalid"
+        [loading]="saving()"
+      >
+        {{ 'action.save' | translate }}
+      </lib-button>
+      <a routerLink="/backend/article-tags" class="link-simple">{{
+        'action.cancel' | translate
+      }}</a>
+    </div>
+  </form>
+</div>

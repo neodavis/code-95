@@ -1,0 +1,33 @@
+// ============================================================
+// Base styles — ported from Django base.scss / layout.scss
+// ============================================================
+
+html {
+  font-size: var(--font-size-base);
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-page-bg);
+  color: var(--color-body-text);
+  font-weight: 300;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-head);
+  font-weight: 700;
+  margin: 0;
+}
+
+a {
+  transition: all 0.2s ease-in-out;
+}
+
+* {
+  box-sizing: border-box;
+}

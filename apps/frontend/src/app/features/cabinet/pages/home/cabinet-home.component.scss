@@ -1,0 +1,78 @@
+.home-grid {
+  margin-top: 25px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 30px;
+
+  @media (min-width: 992px) {
+    grid-template-columns: 4fr 8fr;
+  }
+
+  &__aside,
+  &__main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+}
+
+.groups-header,
+.groups-row {
+  display: grid;
+  grid-template-columns: 4fr 4fr 4fr;
+  gap: 16px;
+  align-items: center;
+}
+
+// Make the status badge hug its content instead of stretching to the grid cell.
+.groups-row .badge {
+  justify-self: start;
+}
+
+.info-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+  min-width: 0;
+
+  &__icon {
+    width: 20px;
+    text-align: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  // Truncate long content (e.g., TC website URL) with ellipsis; full string
+  // remains accessible via the native `title` tooltip.
+  &__value {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+
+    &__aside,
+    &__main {
+      width: auto;
+    }
+  }
+
+  .groups-header {
+    display: none;
+  }
+
+  .groups-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #dee2e6;
+  }
+}

@@ -1,0 +1,18 @@
+<div
+  class="accordion-item__header"
+  role="button"
+  tabindex="0"
+  (click)="toggle()"
+  (keydown.enter)="toggle()"
+  (keydown.space)="toggle()"
+>
+  <span class="accordion-item__title">{{ title }}</span>
+  <div class="accordion-item__actions">
+    <ng-content select="[actions]" />
+  </div>
+</div>
+@if (expanded) {
+<div class="accordion-item__body">
+  <ng-content />
+</div>
+}

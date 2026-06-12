@@ -1,0 +1,85 @@
+// ============================================================
+// Bordered card — exact port of Django bordered-card.scss
+// Note: typo '.bordered-card_veritical' preserved from source
+// ============================================================
+
+.bordered-card-wrap {
+  position: relative;
+  background: var(--gradient-accent);
+  padding: 2px;
+  border-radius: var(--radius-md);
+}
+
+.bordered-card-wrap__label {
+  position: absolute;
+  top: -25px;
+  height: 25px;
+  right: 0;
+  padding: 0 10px;
+  background: var(--color-bordered-card-label);
+  color: var(--color-white);
+}
+
+.bordered-card {
+  background: var(--color-white);
+  color: black;
+}
+
+.bordered-card_horizontal {
+  display: flex;
+  flex-direction: row;
+  border-radius: var(--radius-sm);
+}
+
+// Note: typo preserved exactly from Django source
+.bordered-card_veritical {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-sm);
+}
+
+.bordered-card__item {
+  padding: 16px;
+  position: relative;
+  flex-basis: 100%;
+}
+
+.bordered-card__item + .bordered-card__item::before {
+  content: '';
+  background: var(--gradient-accent);
+  position: absolute;
+}
+
+.bordered-card_horizontal .bordered-card__item + .bordered-card__item::before {
+  height: 100%;
+  width: 2px;
+  left: -1px;
+  top: 0;
+  bottom: 0;
+}
+
+.bordered-card_veritical .bordered-card__item + .bordered-card__item::before {
+  height: 2px;
+  width: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+@media (max-width: $bp-md) {
+  .bordered-card_horizontal {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .bordered-card_horizontal .bordered-card__item + .bordered-card__item::before {
+    display: none;
+  }
+}
+
+@media (max-width: 400px) {
+  .bordered-card_horizontal {
+    grid-template-columns: 1fr;
+  }
+}

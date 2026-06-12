@@ -1,0 +1,304 @@
+<lib-page-header
+  [title]="(isEdit ? 'page.edit_user' : 'page.new_user') | translate"
+/>
+<div class="admin-form">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <h3 class="admin-form__section-title">
+      {{ 'section.user_account' | translate }}
+    </h3>
+
+    <div class="admin-form-grid">
+      @if (!isEdit) {
+        <div class="e-form-group">
+          <label class="e-form-group__label" for="uniqueCode">{{
+            'form.unique_code' | translate
+          }}</label>
+          <input
+            id="uniqueCode"
+            class="e-form-group__input"
+            [class.e-form-group__input--invalid]="
+              form.controls.uniqueCode.touched &&
+              form.controls.uniqueCode.invalid
+            "
+            [formControl]="form.controls.uniqueCode"
+            type="text"
+            autocomplete="off"
+            placeholder="ABC-12345"
+          />
+          @if (
+            form.controls.uniqueCode.touched && form.controls.uniqueCode.invalid
+          ) {
+            <span class="e-form-group__error">{{
+              form.controls.uniqueCode.errors | fieldError
+            }}</span>
+          }
+        </div>
+      }
+
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="password">
+          {{
+            (isEdit ? 'form.password_edit' : 'form.password_create') | translate
+          }}
+        </label>
+        <input
+          id="password"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.password.touched && form.controls.password.invalid
+          "
+          [formControl]="form.controls.password"
+          type="password"
+          autocomplete="new-password"
+          placeholder="••••••"
+        />
+        @if (form.controls.password.touched && form.controls.password.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.password.errors | fieldError
+          }}</span>
+        }
+      </div>
+
+    </div>
+
+    <h3 class="admin-form__section-title">
+      {{ 'section.personal_info' | translate }}
+    </h3>
+
+    <div class="admin-form-grid">
+      <div class="e-form-group">
+        <label
+          class="e-form-group__label"
+          for="lastName"
+          >{{ 'table.surname' | translate }}</label
+        >
+        <input
+          id="lastName"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.lastName.touched && form.controls.lastName.invalid
+          "
+          [formControl]="form.controls.lastName"
+          type="text"
+          placeholder="Іванов"
+        />
+        @if (form.controls.lastName.touched && form.controls.lastName.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.lastName.errors | fieldError
+          }}</span>
+        }
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="firstName">{{
+          'table.first_name' | translate
+        }}</label>
+        <input
+          id="firstName"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.firstName.touched && form.controls.firstName.invalid
+          "
+          [formControl]="form.controls.firstName"
+          type="text"
+          placeholder="Іван"
+        />
+        @if (
+          form.controls.firstName.touched && form.controls.firstName.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.firstName.errors | fieldError
+          }}</span>
+        }
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="middleName">{{
+          'table.middle_name' | translate
+        }}</label>
+        <input
+          id="middleName"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.middleName.touched && form.controls.middleName.invalid
+          "
+          [formControl]="form.controls.middleName"
+          type="text"
+          placeholder="Іванович"
+        />
+        @if (
+          form.controls.middleName.touched && form.controls.middleName.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.middleName.errors | fieldError
+          }}</span>
+        }
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="birthday">{{
+          'form.date_of_birth' | translate
+        }}</label>
+        <input
+          id="birthday"
+          class="e-form-group__input"
+          [formControl]="form.controls.birthday"
+          type="date"
+        />
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="identificationCode">{{
+          'form.identification_code' | translate
+        }}</label>
+        <input
+          id="identificationCode"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.identificationCode.touched &&
+            form.controls.identificationCode.invalid
+          "
+          [formControl]="form.controls.identificationCode"
+          type="text"
+          autocomplete="off"
+          placeholder="1234567890"
+        />
+        @if (
+          form.controls.identificationCode.touched &&
+          form.controls.identificationCode.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.identificationCode.errors | fieldError
+          }}</span>
+        }
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="passport">{{
+          'form.passport' | translate
+        }}</label>
+        <input
+          id="passport"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.passport.touched && form.controls.passport.invalid
+          "
+          [formControl]="form.controls.passport"
+          type="text"
+          autocomplete="off"
+          placeholder="АА 123456"
+        />
+        @if (
+          form.controls.passport.touched && form.controls.passport.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.passport.errors | fieldError
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <h3 class="admin-form__section-title">
+      {{ 'section.address_contacts' | translate }}
+    </h3>
+
+    <div class="admin-form-grid">
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="email">{{
+          'table.email' | translate
+        }}</label>
+        <input
+          id="email"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.email.touched && form.controls.email.invalid
+          "
+          [formControl]="form.controls.email"
+          type="email"
+          autocomplete="off"
+          placeholder="example@email.com"
+        />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.email.errors | fieldError
+          }}</span>
+        }
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'table.phone' | translate
+        }}</label>
+        <lib-phone-input
+          [formControl]="form.controls.phone"
+          [invalid]="form.controls.phone.touched && form.controls.phone.invalid"
+        />
+        @if (form.controls.phone.touched && form.controls.phone.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.phone.errors | fieldError
+          }}</span>
+        }
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label" for="region">{{
+          'form.region' | translate
+        }}</label>
+        <input
+          id="region"
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.region.touched && form.controls.region.invalid
+          "
+          [formControl]="form.controls.region"
+          type="text"
+          placeholder="Київська"
+        />
+        @if (form.controls.region.touched && form.controls.region.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.region.errors | fieldError
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <h3 class="admin-form__section-title">
+      {{ 'section.user_flags' | translate }}
+    </h3>
+
+    <div class="admin-form-checkboxes">
+      <label>
+        <input type="checkbox" [formControl]="form.controls.isStaff" />
+        {{ 'form.is_staff' | translate }}
+      </label>
+      <label>
+        <input type="checkbox" [formControl]="form.controls.isSuperuser" />
+        {{ 'form.is_superuser' | translate }}
+      </label>
+      <label>
+        <input type="checkbox" [formControl]="form.controls.isActive" />
+        {{ 'form.active' | translate }}
+      </label>
+    </div>
+
+    @if (error()) {
+      <div class="e-form-group__error mb-4">
+        {{ error() }}
+      </div>
+    }
+
+    <div class="admin-form__actions">
+      <lib-button
+        type="submit"
+        variant="primary"
+        [disabled]="form.invalid"
+        [loading]="saving()"
+      >
+        {{ 'action.save' | translate }}
+      </lib-button>
+      <a routerLink="/backend/users" class="link-simple">{{
+        'action.cancel' | translate
+      }}</a>
+    </div>
+  </form>
+</div>

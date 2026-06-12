@@ -1,0 +1,12 @@
+<lib-page-header [title]="'page.edit_driver' | translate">
+  <div class="flex gap-4 items-center">
+    <a [routerLink]="['/cabinet/drivers', driverId]" class="link-simple">
+      {{ 'action.view' | translate }}
+    </a>
+    <a routerLink="/cabinet/drivers" class="link-simple">
+      {{ 'action.cancel' | translate }}
+    </a>
+  </div>
+</lib-page-header>
+
+<app-driver-form mode="edit" [driverId]="driverId" />

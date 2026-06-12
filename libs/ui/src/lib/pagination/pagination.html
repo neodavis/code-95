@@ -1,0 +1,37 @@
+<ul class="pagination">
+  <li class="page-item" [class.disabled]="currentPage === 1">
+    <a
+      class="page-link"
+      role="button"
+      tabindex="0"
+      (click)="goTo(currentPage - 1)"
+      (keydown.enter)="goTo(currentPage - 1)"
+      (keydown.space)="goTo(currentPage - 1)"
+      >&laquo;</a
+    >
+  </li>
+  @for (page of pages; track page) {
+  <li class="page-item" [class.active]="page === currentPage">
+    <a
+      class="page-link"
+      role="button"
+      tabindex="0"
+      (click)="goTo(page)"
+      (keydown.enter)="goTo(page)"
+      (keydown.space)="goTo(page)"
+      >{{ page }}</a
+    >
+  </li>
+  }
+  <li class="page-item" [class.disabled]="currentPage === totalPages">
+    <a
+      class="page-link"
+      role="button"
+      tabindex="0"
+      (click)="goTo(currentPage + 1)"
+      (keydown.enter)="goTo(currentPage + 1)"
+      (keydown.space)="goTo(currentPage + 1)"
+      >&raquo;</a
+    >
+  </li>
+</ul>

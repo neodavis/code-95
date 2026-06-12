@@ -1,0 +1,206 @@
+<lib-page-header [title]="'ecard.edit_title' | translate">
+  <a [routerLink]="['/cabinet/ecards', cardId]" class="link-simple">
+    {{ 'action.cancel' | translate }}
+  </a>
+</lib-page-header>
+
+@if (loading()) {
+  <p>{{ 'common.loading' | translate }}</p>
+} @else if (card(); as c) {
+  <form (submit)="$event.preventDefault(); submit()">
+    <!-- Names: UA readonly, translit editable within 48 h (server-enforced) -->
+    <div class="form-grid-2 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'ecard.surname' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="c.surname"
+          readonly
+        />
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'ecard.first_name' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="c.firstName"
+          readonly
+        />
+      </div>
+    </div>
+
+    <div class="form-grid-2 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'ecard.surname_translit' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [formControl]="form.controls.surnameTranslit"
+        />
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'ecard.first_name_translit' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [formControl]="form.controls.firstNameTranslit"
+        />
+      </div>
+    </div>
+
+    <!-- Serial number is the SPK link — read-only after creation -->
+    <div class="e-form-group">
+      <label class="e-form-group__label">{{
+        'ecard.serial_no' | translate
+      }}</label>
+      <input
+        class="e-form-group__input"
+        type="text"
+        [value]="c.serialNo ?? ''"
+        readonly
+      />
+    </div>
+
+    <div class="form-grid-2 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'ecard.licence_no' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [formControl]="form.controls.licenceNo"
+        />
+      </div>
+    </div>
+
+    <div class="form-grid-2 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'ecard.union_code95' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [formControl]="form.controls.unionCode95"
+        />
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'ecard.date_of_issue' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.dateOfIssue.touched &&
+            form.controls.dateOfIssue.invalid
+          "
+          type="date"
+          [formControl]="form.controls.dateOfIssue"
+        />
+        @if (
+          form.controls.dateOfIssue.touched && form.controls.dateOfIssue.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.dateOfIssue.errors | fieldError
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- Expiry (derived from SPK) and issuing authority — read-only -->
+    <div class="form-grid-2 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'ecard.date_of_expiry' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="c.dateOfExpiry ? (c.dateOfExpiry | date: 'dd.MM.yyyy') : ''"
+          readonly
+        />
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'ecard.issued_by' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="c.issuedBy ?? ''"
+          readonly
+        />
+      </div>
+    </div>
+
+    <!-- Photo / Signature uploads -->
+    <div class="flex gap-6 mt-4 max-w-[700px] file-pickers-row">
+      <div>
+        <lib-file-picker
+          [label]="'form.photo' | translate"
+          [maxSizeMb]="5"
+          accept="image/jpeg,image/png,image/webp"
+          [existingUrl]="photoImg()"
+          (fileChange)="$event && uploadFile('photo', $event)"
+        ></lib-file-picker>
+        @if (uploading() === 'photo') {
+          <p class="text-[13px] text-[#666] mt-1">
+            {{ 'common.saving' | translate }}
+          </p>
+        }
+      </div>
+      <div>
+        <lib-file-picker
+          [label]="'form.signature' | translate"
+          [maxSizeMb]="5"
+          accept="image/jpeg,image/png,image/webp"
+          [existingUrl]="signImg()"
+          (fileChange)="$event && uploadFile('signature', $event)"
+        ></lib-file-picker>
+        @if (uploading() === 'signature') {
+          <p class="text-[13px] text-[#666] mt-1">
+            {{ 'common.saving' | translate }}
+          </p>
+        }
+      </div>
+    </div>
+    @if (uploadError()) {
+      <p class="text-danger mt-2">{{ uploadError() }}</p>
+    }
+
+    <!-- Categories list -->
+    <div class="e-form-group mt-4">
+      <label class="e-form-group__label">{{
+        'ecard.categories_list' | translate
+      }}</label>
+      <div class="flex flex-wrap gap-3 mt-2">
+        @for (cat of cpcCategories; track cat) {
+          <lib-checkbox
+            [label]="cat"
+            [ngModel]="selectedCategories().has(cat)"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="toggleCategory(cat)"
+          />
+        }
+      </div>
+    </div>
+
+    @if (error()) {
+      <p class="text-danger mg-b-10">{{ error() }}</p>
+    }
+
+    <lib-button type="submit" [loading]="saving()">
+      {{ 'action.save' | translate }}
+    </lib-button>
+  </form>
+}

@@ -1,0 +1,261 @@
+@if (loading()) {
+  <p>{{ 'common.loading' | translate }}</p>
+} @else if (driver(); as d) {
+  <lib-page-header [title]="d.surname + ' ' + d.firstName + ' ' + d.middleName">
+    <a
+      [routerLink]="['/cabinet/drivers', driverId, 'edit']"
+      class="link-simple"
+    >
+      {{ 'action.edit' | translate }}
+    </a>
+    <a routerLink="/cabinet/drivers" class="link-simple">
+      {{ 'action.back' | translate }}
+    </a>
+  </lib-page-header>
+
+  @if (d.photoImg || d.signImg) {
+    <div class="flex flex-wrap gap-8 mg-b-24">
+      @if (d.photoImg) {
+        <figure class="m-0">
+          <figcaption class="mb-1 text-sm font-medium">
+            {{ 'form.photo' | translate }}
+          </figcaption>
+          <img
+            [src]="d.photoImg"
+            alt=""
+            class="block max-w-[220px] max-h-[180px] rounded border border-gray-300 bg-white"
+          />
+        </figure>
+      }
+      @if (d.signImg) {
+        <figure class="m-0">
+          <figcaption class="mb-1 text-sm font-medium">
+            {{ 'form.signature' | translate }}
+          </figcaption>
+          <img
+            [src]="d.signImg"
+            alt=""
+            class="block max-w-[220px] max-h-[180px] rounded border border-gray-300 bg-white"
+          />
+        </figure>
+      }
+    </div>
+  }
+
+  <table class="table max-w-[700px] mg-b-24">
+    <tbody>
+      <tr>
+        <td>
+          <strong>{{ 'form.pip' | translate }}</strong>
+        </td>
+        <td>{{ d.surname }} {{ d.firstName }} {{ d.middleName }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'driver.status' | translate }}</strong>
+        </td>
+        <td>{{ 'driver_status.' + d.statusCode | translate }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'form.surname_translit' | translate }}</strong>
+        </td>
+        <td>{{ d.surnameTranslit ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'form.first_name_translit' | translate }}</strong>
+        </td>
+        <td>{{ d.firstNameTranslit ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'form.tax_number' | translate }}</strong>
+        </td>
+        <td>{{ d.taxNumber }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'form.date_of_birth' | translate }}</strong>
+        </td>
+        <td>
+          {{ d.dateOfBirth ? (d.dateOfBirth | date: 'dd.MM.yyyy') : '—' }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'spk.country_of_birth' | translate }}</strong>
+        </td>
+        <td>{{ countryName(d.countryOfBirthId) }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'form.phone' | translate }}</strong>
+        </td>
+        <td>{{ d.phone ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'form.email' | translate }}</strong>
+        </td>
+        <td>{{ d.email ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'driver.address' | translate }}</strong>
+        </td>
+        <td>{{ fullAddress(d) }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'form.categories_list' | translate }}</strong>
+        </td>
+        <td>{{ d.categoriesList ?? '—' }}</td>
+      </tr>
+      @if (d.idEspk) {
+        <tr>
+          <td>
+            <strong>{{ 'table.spk' | translate }}</strong>
+          </td>
+          <td>
+            <a [routerLink]="['/cabinet/espk', d.idEspk]" class="link-simple">
+              #{{ d.idEspk }}
+            </a>
+          </td>
+        </tr>
+      }
+      @if (d.idCard) {
+        <tr>
+          <td>
+            <strong>{{ 'table.ecard' | translate }}</strong>
+          </td>
+          <td>
+            <a [routerLink]="['/cabinet/ecards', d.idCard]" class="link-simple">
+              #{{ d.idCard }}
+            </a>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <!-- Driver license -->
+  <h3 class="mg-b-12">{{ 'driver.license_section' | translate }}</h3>
+  <table class="table max-w-[700px] mg-b-24">
+    <tbody>
+      <tr>
+        <td>
+          <strong>{{ 'driver.license_no' | translate }}</strong>
+        </td>
+        <td>{{ d.driverLicenseNo ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'driver.license_categories' | translate }}</strong>
+        </td>
+        <td>{{ d.driverLicenseCategories ?? '—' }}</td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'driver.license_issue_date' | translate }}</strong>
+        </td>
+        <td>
+          {{
+            d.driverLicenseIssueDate
+              ? (d.driverLicenseIssueDate | date: 'dd.MM.yyyy')
+              : '—'
+          }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <strong>{{ 'driver.license_expiry_date' | translate }}</strong>
+        </td>
+        <td>
+          {{
+            d.driverLicenseExpiryDate
+              ? (d.driverLicenseExpiryDate | date: 'dd.MM.yyyy')
+              : '—'
+          }}
+        </td>
+      </tr>
+      @if (d.cCategoryIssueDate) {
+        <tr>
+          <td>
+            <strong>{{ 'driver.c_category_issue_date' | translate }}</strong>
+          </td>
+          <td>{{ d.cCategoryIssueDate | date: 'dd.MM.yyyy' }}</td>
+        </tr>
+      }
+      @if (d.dCategoryIssueDate) {
+        <tr>
+          <td>
+            <strong>{{ 'driver.d_category_issue_date' | translate }}</strong>
+          </td>
+          <td>{{ d.dCategoryIssueDate | date: 'dd.MM.yyyy' }}</td>
+        </tr>
+      }
+      <tr>
+        <td>
+          <strong>{{ 'driver.intends_urban_suburban_route' | translate }}</strong>
+        </td>
+        <td>{{ d.intendsUrbanSuburbanRoute ? '✓' : '—' }}</td>
+      </tr>
+      @if (d.driverLicenseUpdatedAt) {
+        <tr>
+          <td>
+            <strong>{{ 'driver.license_last_updated' | translate }}</strong>
+          </td>
+          <td>{{ d.driverLicenseUpdatedAt | date: 'dd.MM.yyyy HH:mm' }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <!-- Training history -->
+  @if (history(); as h) {
+    <h3 class="mg-b-12">{{ 'page.driver_history' | translate }}</h3>
+    @if (h.spkHistory.length === 0) {
+      <p class="text-muted">{{ 'common.no_data' | translate }}</p>
+    } @else {
+      <div class="overflow-x-auto mg-b-24">
+        <table class="table">
+        <thead>
+          <tr>
+            <th>{{ 'table.spk_no' | translate }}</th>
+            <th>{{ 'table.tc_name' | translate }}</th>
+            <th>{{ 'table.carry_type' | translate }}</th>
+            <th>{{ 'spk.date_of_test' | translate }}</th>
+            <th>{{ 'spk.date_of_expiry' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of h.spkHistory; track row.id) {
+            <tr>
+              <td>
+                <a [routerLink]="['/cabinet/espk', row.id]" class="link-simple">
+                  {{ row.spkNo }}
+                </a>
+              </td>
+              <td>{{ row.tcName }}</td>
+              <td>{{ row.carryTypeTxt ?? '—' }}</td>
+              <td>
+                {{
+                  row.dateOfTest ? (row.dateOfTest | date: 'dd.MM.yyyy') : '—'
+                }}
+              </td>
+              <td>
+                {{
+                  row.dateOfExpiry
+                    ? (row.dateOfExpiry | date: 'dd.MM.yyyy')
+                    : '—'
+                }}
+              </td>
+            </tr>
+          }
+        </tbody>
+        </table>
+      </div>
+    }
+  }
+}

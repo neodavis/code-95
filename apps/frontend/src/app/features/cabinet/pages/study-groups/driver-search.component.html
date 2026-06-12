@@ -1,0 +1,70 @@
+<lib-page-header [title]="'cabinet.add_existing_driver' | translate">
+  <a [routerLink]="['/cabinet/study-groups', groupId]" class="link-simple">
+    {{ 'action.cancel' | translate }}
+  </a>
+</lib-page-header>
+
+<div class="e-form-group">
+  <label class="e-form-group__label">{{
+    'cabinet.search_driver_hint' | translate
+  }}</label>
+  <input
+    class="e-form-group__input"
+    type="text"
+    [(ngModel)]="query"
+    (ngModelChange)="onSearch()"
+    [placeholder]="'cabinet.search_driver_placeholder' | translate"
+  />
+</div>
+
+@if (results().length) {
+  <div class="overflow-x-auto">
+  <table class="table">
+    <thead>
+      <tr>
+        <th class="w-[40px]">
+          <input
+            type="checkbox"
+            [checked]="allSelected()"
+            (change)="toggleAll()"
+          />
+        </th>
+        <th>{{ 'table.surname' | translate }}</th>
+        <th>{{ 'table.first_name' | translate }}</th>
+        <th>{{ 'table.middle_name' | translate }}</th>
+        <th>{{ 'table.tax_number' | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (d of results(); track d.id) {
+        <tr>
+          <td>
+            <input
+              type="checkbox"
+              [checked]="selectedIds().has(d.id)"
+              (change)="toggleSelection(d.id)"
+            />
+          </td>
+          <td>{{ d.surname }}</td>
+          <td>{{ d.firstName }}</td>
+          <td>{{ d.middleName }}</td>
+          <td>{{ d.taxNumber }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  </div>
+
+  <div class="mt-4">
+    <lib-button
+      variant="primary"
+      [disabled]="selectedIds().size === 0"
+      [loading]="saving()"
+      (click)="submitSelected()"
+    >
+      {{ 'action.add' | translate }}
+    </lib-button>
+  </div>
+} @else if (searched()) {
+  <p>{{ 'common.no_records' | translate }}</p>
+}

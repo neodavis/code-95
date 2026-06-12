@@ -1,0 +1,79 @@
+<lib-page-header [title]="'page.study_groups' | translate">
+  <a
+    routerLink="/cabinet/study-groups/create"
+    class="link-black link-black_success"
+  >
+    {{ 'action.add_study_group' | translate }}
+  </a>
+</lib-page-header>
+
+<lib-data-table
+  [items]="items()"
+  [loading]="loading()"
+  [currentPage]="currentPage()"
+  [totalPages]="totalPages()"
+  [sortColumn]="sortColumn()"
+  [sortOrder]="sortOrder()"
+  (sortChange)="toggleSort($event)"
+  (searchChange)="onSearchInput($event)"
+  (pageChange)="loadPage($event)"
+>
+  <ng-template libColumn="name" header="table.name" [sortable]="true" let-item>
+    <a [routerLink]="['/cabinet/study-groups', item.id]">{{ item.name }}</a>
+  </ng-template>
+  <ng-template
+    libColumn="status"
+    header="table.status"
+    [sortable]="true"
+    let-item
+  >
+    <span [class]="statusClasses[item.status]">{{
+      statusLabels[item.status] | translate
+    }}</span>
+  </ng-template>
+  <ng-template
+    libColumn="dateStart"
+    header="table.date_range"
+    [sortable]="true"
+    let-item
+  >
+    {{ item.dateStart ? (item.dateStart | date: 'dd.MM.yyyy') : '—' }} –
+    {{ item.dateFinish ? (item.dateFinish | date: 'dd.MM.yyyy') : '—' }}
+  </ng-template>
+  <ng-template
+    libColumn="actions"
+    header="table.actions"
+    [ellipsis]="false"
+    let-item
+  >
+    <a
+      [routerLink]="['/cabinet/study-groups', item.id]"
+      class="link-simple link-simple_primary"
+    >
+      {{ 'action.view' | translate }}
+    </a>
+    <a
+      [routerLink]="['/cabinet/study-groups', item.id, 'edit']"
+      class="link-simple"
+    >
+      {{ 'action.edit' | translate }}
+    </a>
+    @if (
+      item.status === ENROLLMENT_START || item.status === ENROLLMENT_FINISH
+    ) {
+      <button
+        type="button"
+        class="link-simple link-simple_danger"
+        [disabled]="deletingId() === item.id"
+        title="{{ 'action.delete' | translate }}"
+        (click)="deleteStudyGroup(item.id)"
+      >
+        @if (deletingId() === item.id) {
+          <span class="btn-spinner"></span>
+        } @else {
+          <i class="fa-solid fa-trash"></i>
+        }
+      </button>
+    }
+  </ng-template>
+</lib-data-table>

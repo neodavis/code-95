@@ -1,0 +1,106 @@
+// Bootstrap-compatible color utilities used in page templates
+.text-warning {
+  color: var(--color-warning);
+}
+.text-primary {
+  color: var(--color-blue);
+}
+.text-success {
+  color: var(--color-success);
+}
+.text-danger {
+  color: var(--color-danger);
+}
+
+// Status badge
+.badge {
+  white-space: nowrap;
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  font-weight: 500;
+
+  &-warning {
+    background-color: color-mix(in srgb, var(--color-warning) 15%, transparent);
+    color: var(--color-warning);
+  }
+  &-primary {
+    background-color: color-mix(in srgb, var(--color-blue) 15%, transparent);
+    color: var(--color-blue);
+  }
+  &-success {
+    background-color: color-mix(in srgb, var(--color-success) 15%, transparent);
+    color: var(--color-success);
+  }
+  &-danger {
+    background-color: color-mix(in srgb, var(--color-danger) 15%, transparent);
+    color: var(--color-danger);
+  }
+  &-secondary {
+    background-color: color-mix(in srgb, #6c757d 15%, transparent);
+    color: #6c757d;
+  }
+}
+
+// Rich-text area (Summernote parity placeholder for admin description/answer fields)
+.rich-text-area {
+  min-height: 200px;
+  resize: vertical;
+  font-family: var(--font-body);
+  line-height: 1.5;
+}
+
+// Inline hint text shown below admin form inputs
+.e-form-group__hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #888;
+}
+
+// Spacing utilities used in Django templates
+.mg-t-20 {
+  margin-top: 20px;
+}
+.mg-t-30 {
+  margin-top: 30px;
+}
+.mg-b-10 {
+  margin-bottom: 10px;
+}
+.mg-b-15 {
+  margin-bottom: 15px;
+}
+.mg-b-20 {
+  margin-bottom: 20px;
+}
+.mg-b-24 {
+  margin-bottom: 24px;
+}
+.mg-b-100 {
+  margin-bottom: 100px;
+}
+.mg-r-10 {
+  margin-right: 10px;
+}
+.mg-l-15 {
+  margin-left: 15px;
+}
+
+// Flex utilities
+.d-flex {
+  display: flex;
+}
+.gap-10 {
+  gap: 10px;
+}
+.align-items-center {
+  align-items: center;
+}
+.mg-b-0 {
+  margin-bottom: 0;
+}
+.mg-l-auto {
+  margin-left: auto;
+}

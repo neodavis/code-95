@@ -1,0 +1,125 @@
+<div class="body-inner">
+  <div
+    class="fixed-header-nav"
+    [class.fixed-header-nav_menu-open]="menuOpen()"
+  >
+    <div class="header header_background">
+      <div class="header-inner">
+        <div class="header-inner__item header-inner__item--brand">
+          <a routerLink="/" class="e-main-logo">
+            <img
+              class="e-main-logo__img"
+              src="assets/img/logo-diia-black.svg"
+              alt="Дія"
+            />
+            <h1 class="e-main-logo__text">
+              {{ 'app.title_line1' | translate }} <br />
+              {{ 'app.title_line2' | translate }}
+            </h1>
+          </a>
+
+          <button
+            type="button"
+            class="header__burger"
+            [attr.aria-expanded]="menuOpen()"
+            [attr.aria-label]="
+              (menuOpen() ? 'nav.close' : 'nav.open') | translate
+            "
+            (click)="toggleMenu()"
+          >
+            <span class="header__burger-bar"></span>
+            <span class="header__burger-bar"></span>
+            <span class="header__burger-bar"></span>
+          </button>
+        </div>
+
+        <div class="header-inner__item header-inner__item--nav">
+          <lib-navigation [items]="navItems" />
+          <lib-lang-selector />
+          @if (auth.user(); as user) {
+            <div class="e-user-badge">
+              <span class="e-user-badge__name"
+                >{{ user.lastName }} {{ user.firstName }}</span
+              >
+              <button
+                class="e-user-badge__logout link-simple !p-0"
+                type="button"
+                (click)="auth.logout()"
+              >
+                {{ 'auth.logout' | translate }}
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (secondaryNavItems.length) {
+      <div class="secondary-nav secondary-nav_background">
+        <div class="secondary-nav__inner">
+          <lib-navigation [items]="secondaryNavItems" />
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="content">
+    <ng-content />
+  </div>
+
+  <footer class="footer">
+    <div class="footer__left">
+      <div class="footer-description">
+        <img
+          src="assets/img/footerkmuicon.svg"
+          class="footer-description__icon"
+          alt=""
+        />
+        <span class="footer-description__text">
+          {{ 'footer.giz_text' | translate }}
+        </span>
+      </div>
+      <div class="footer-description">
+        <img
+          src="assets/img/logo-diia-white.svg"
+          class="footer-description__icon"
+          alt="Дія"
+        />
+        <span class="footer-description__text">
+          {{ 'footer.diia_text' | translate }}
+          <a class="footer-link" href="https://diia.gov.ua/" target="_blank">
+            diia.gov.ua</a
+          >
+        </span>
+      </div>
+      <div class="footer-description">
+        <img
+          src="assets/img/cc-logo-white.svg"
+          class="footer-description__icon"
+          alt="Creative Commons"
+        />
+        <span class="footer-description__text">
+          {{ 'footer.cc_text' | translate }}
+          <a class="footer-link" target="_blank" href="#">{{
+            'footer.cc_license' | translate
+          }}</a>
+          {{ 'footer.cc_unless' | translate }}
+        </span>
+      </div>
+    </div>
+
+    <div class="footer__right">
+      @if (footerNavItems.length) {
+        <ul class="footer-menu">
+          @for (item of footerNavItems; track item.route) {
+            <li>
+              <a class="footer-link" [routerLink]="item.route">{{
+                item.label | translate
+              }}</a>
+            </li>
+          }
+        </ul>
+      }
+    </div>
+  </footer>
+</div>

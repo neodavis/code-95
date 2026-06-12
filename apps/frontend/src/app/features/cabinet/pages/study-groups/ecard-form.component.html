@@ -1,0 +1,276 @@
+<lib-page-header [title]="'cabinet.create_ecard_title' | translate">
+  <a [routerLink]="['/cabinet/study-groups', groupId]" class="link-simple">
+    {{ 'action.cancel' | translate }}
+  </a>
+</lib-page-header>
+
+@if (loading()) {
+  <p>{{ 'common.loading' | translate }}</p>
+} @else if (prefill(); as p) {
+  <form (submit)="$event.preventDefault(); submit()">
+    <!-- Row 1: surname, firstName -->
+    <div class="form-grid-2 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'form.surname' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="p.surname"
+          readonly
+        />
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'form.first_name' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="p.firstName"
+          readonly
+        />
+      </div>
+    </div>
+
+    <!-- Row 2: surnameTranslit, firstNameTranslit -->
+    <div class="form-grid-2 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label"
+          >{{ 'form.surname_translit' | translate }} *</label
+        >
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.surnameTranslit.touched &&
+            form.controls.surnameTranslit.invalid
+          "
+          type="text"
+          [formControl]="form.controls.surnameTranslit"
+          placeholder="IVANOV"
+        />
+        @if (
+          form.controls.surnameTranslit.touched &&
+          form.controls.surnameTranslit.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.surnameTranslit.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label"
+          >{{ 'form.first_name_translit' | translate }} *</label
+        >
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.firstNameTranslit.touched &&
+            form.controls.firstNameTranslit.invalid
+          "
+          type="text"
+          [formControl]="form.controls.firstNameTranslit"
+          placeholder="IVAN"
+        />
+        @if (
+          form.controls.firstNameTranslit.touched &&
+          form.controls.firstNameTranslit.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.firstNameTranslit.errors | fieldError
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- Transliteration hint -->
+    <p class="mg-b-15 text-xs text-[#d9534f]">
+      {{ 'form.translit_hint' | translate }}
+    </p>
+
+    <!-- Row 3: dateOfBirth -->
+    <div class="e-form-group">
+      <label class="e-form-group__label">{{
+        'form.date_of_birth' | translate
+      }}</label>
+      <input
+        class="e-form-group__input"
+        type="text"
+        [value]="p.dateOfBirth ? (p.dateOfBirth | date: 'dd.MM.yyyy') : ''"
+        readonly
+      />
+    </div>
+
+    <!-- Row 4: dateOfIssue, dateOfExpiry (readonly), serialNo (readonly), issuedBy -->
+    <div class="form-grid-4 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label"
+          >{{ 'form.date_of_issue' | translate }} *</label
+        >
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.dateOfIssue.touched &&
+            form.controls.dateOfIssue.invalid
+          "
+          type="date"
+          [formControl]="form.controls.dateOfIssue"
+          placeholder="дд.мм.рррр"
+        />
+        @if (
+          form.controls.dateOfIssue.touched && form.controls.dateOfIssue.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.dateOfIssue.errors | fieldError
+          }}</span>
+        }
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'form.date_of_expiry' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="
+            p.spkDateOfExpiry ? (p.spkDateOfExpiry | date: 'dd.MM.yyyy') : ''
+          "
+          readonly
+        />
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'form.spk_serial_no' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [value]="p.spkSerialNo ?? ''"
+          readonly
+        />
+      </div>
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'form.issued_by' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [formControl]="form.controls.issuedBy"
+          readonly
+        />
+      </div>
+    </div>
+
+    <!-- Row 5: licenceNo (legacy parity: ECardForm) -->
+    <div class="form-grid-2 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label"
+          >{{ 'form.licence_no' | translate }} *</label
+        >
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.licenceNo.touched && form.controls.licenceNo.invalid
+          "
+          type="text"
+          [formControl]="form.controls.licenceNo"
+          placeholder="ABC000000"
+        />
+        @if (
+          form.controls.licenceNo.touched && form.controls.licenceNo.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.licenceNo.errors | fieldError
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- Row 6: unionCode95 (editable, pre-filled) -->
+    <div class="form-grid-2 mg-b-0">
+      <div class="e-form-group">
+        <label class="e-form-group__label"
+          >{{ 'form.union_code95' | translate }} *</label
+        >
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.unionCode95.touched &&
+            form.controls.unionCode95.invalid
+          "
+          type="text"
+          [formControl]="form.controls.unionCode95"
+        />
+        @if (
+          form.controls.unionCode95.touched && form.controls.unionCode95.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.unionCode95.errors | fieldError
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- Photo / Signature uploads (legacy parity: ECardCreate form) -->
+    <div class="flex gap-6 mt-4 max-w-[700px] file-pickers-row">
+      <div>
+        <lib-file-picker
+          [label]="'form.photo' | translate"
+          [maxSizeMb]="5"
+          accept="image/jpeg,image/png,image/webp"
+          [existingUrl]="photoImg()"
+          (fileChange)="$event && uploadFile('photo', $event)"
+        ></lib-file-picker>
+        @if (uploading() === 'photo') {
+          <p class="text-[13px] text-[#666] mt-1">
+            {{ 'common.saving' | translate }}
+          </p>
+        }
+      </div>
+      <div>
+        <lib-file-picker
+          [label]="'form.signature' | translate"
+          [maxSizeMb]="5"
+          accept="image/jpeg,image/png,image/webp"
+          [existingUrl]="signImg()"
+          (fileChange)="$event && uploadFile('signature', $event)"
+        ></lib-file-picker>
+        @if (uploading() === 'signature') {
+          <p class="text-[13px] text-[#666] mt-1">
+            {{ 'common.saving' | translate }}
+          </p>
+        }
+      </div>
+    </div>
+    @if (uploadError()) {
+      <p class="text-danger mt-2">{{ uploadError() | translate }}</p>
+    }
+
+    <!-- Categories list -->
+    <div class="e-form-group mt-4">
+      <label class="e-form-group__label">{{
+        'ecard.categories_list' | translate
+      }}</label>
+      <div class="flex flex-wrap gap-3 mt-2">
+        @for (cat of availableCategories(); track cat) {
+          <lib-checkbox
+            [label]="cat"
+            [ngModel]="selectedCategories().has(cat)"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="toggleCategory(cat)"
+          />
+        }
+      </div>
+    </div>
+
+    @if (error()) {
+      <p class="text-danger mg-b-10">{{ error() }}</p>
+    }
+
+    <lib-button type="submit" [loading]="saving()" [disabled]="form.invalid">
+      {{ 'cabinet.add_to_registry' | translate }}
+    </lib-button>
+  </form>
+}

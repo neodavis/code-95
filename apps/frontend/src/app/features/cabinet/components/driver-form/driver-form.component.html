@@ -1,0 +1,554 @@
+@if (loading()) {
+  <p>{{ 'common.loading' | translate }}</p>
+} @else {
+  @if (courseType() === CourseType.INITIAL) {
+    <div class="mg-b-10 text-info border-l-4 border-blue-500 pl-3">
+      <p><strong>Початкові курси (Наказ 789, п.11.1):</strong></p>
+      <ul class="list-disc ml-5">
+        <li>Категорія посвідчення водія: C, CE, D або DE</li>
+        <li>Посвідчення не повинне бути прострочене</li>
+      </ul>
+    </div>
+  }
+  @if (courseType() === CourseType.INITIAL_SHORTENED) {
+    <div class="mg-b-10 text-info border-l-4 border-blue-500 pl-3">
+      <p><strong>Початково-скорочені курси (Наказ 789, п.11.2):</strong></p>
+      <ul class="list-disc ml-5">
+        <li>C1/C1E — без обмежень стажу</li>
+        <li>D1/D1E — без обмежень стажу</li>
+        <li>C/CE — потрібен стаж керування цієї категорії ≥3 роки (вкажіть «Дата відкриття C/CE»)</li>
+        <li>D/DE — стаж ≥3 роки (вкажіть «Дата відкриття D/DE») АБО намір роботи на міському/приміському маршруті</li>
+        <li>Посвідчення не повинне бути прострочене</li>
+      </ul>
+    </div>
+  }
+  @if (courseType() === CourseType.PERIODIC) {
+    <div class="mg-b-10 text-info border-l-4 border-blue-500 pl-3">
+      <p><strong>Періодичні курси (Наказ 789, п.11.3):</strong></p>
+      <ul class="list-disc ml-5">
+        <li>Водії з раніше пройденими початковими/скороченими курсами</li>
+        <li>АБО посвідчення C/CE/C1/C1E/D/DE/D1/D1E видане до 2020-11-18 (потрібна дата видачі посвідчення)</li>
+        <li>Посвідчення не повинне бути прострочене</li>
+      </ul>
+    </div>
+  }
+
+  <!-- Photo and Signature (mandatory) -->
+  <div class="flex gap-6 mt-2 mb-4 max-w-[700px] file-pickers-row">
+    <div>
+      <lib-file-picker
+        [label]="('form.photo' | translate) + ' *'"
+        [maxSizeMb]="5"
+        accept="image/jpeg,image/png,image/webp"
+        [existingUrl]="photoUrl()"
+        (fileChange)="onPhotoChange($event)"
+      ></lib-file-picker>
+      @if (submitted() && !hasPhoto()) {
+        <span class="e-form-group__error">{{
+          'validation.required' | translate
+        }}</span>
+      }
+    </div>
+    <div>
+      <lib-file-picker
+        [label]="('form.signature' | translate) + ' *'"
+        [maxSizeMb]="5"
+        accept="image/jpeg,image/png,image/webp"
+        [existingUrl]="signUrl()"
+        (fileChange)="onSignatureChange($event)"
+      ></lib-file-picker>
+      @if (submitted() && !hasSignature()) {
+        <span class="e-form-group__error">{{
+          'validation.required' | translate
+        }}</span>
+      }
+    </div>
+  </div>
+
+  <form (submit)="$event.preventDefault(); submit()" class="max-w-[500px]">
+    <!-- ПІБ -->
+    <div class="form-row form-row--3">
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'form.surname' | translate }}
+          @if (!isEdit || canEditName) {
+            *
+          }
+        </label>
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.surname.touched && form.controls.surname.invalid
+          "
+          type="text"
+          [formControl]="form.controls.surname"
+          placeholder="Іванов"
+        />
+        @if (isEdit && canEditName && nameSecondsLeft(); as secs) {
+          <span class="e-form-group__hint">
+            {{ 'driver.name_edit_timer' | translate }}: {{ formatTimer(secs) }}
+          </span>
+        }
+        @if (isEdit && !canEditName) {
+          <span class="e-form-group__hint">{{
+            'driver.name_edit_expired' | translate
+          }}</span>
+        }
+        @if (form.controls.surname.touched && form.controls.surname.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.surname.errors | fieldError
+          }}</span>
+        }
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'form.first_name' | translate }}
+          @if (!isEdit || canEditName) {
+            *
+          }
+        </label>
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.firstName.touched && form.controls.firstName.invalid
+          "
+          type="text"
+          [formControl]="form.controls.firstName"
+          placeholder="Іван"
+        />
+        @if (form.controls.firstName.touched && form.controls.firstName.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.firstName.errors | fieldError
+          }}</span>
+        }
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'form.middle_name' | translate }}
+          @if (isEdit && canEditName) {
+            *
+          }
+        </label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [formControl]="form.controls.middleName"
+          placeholder="Іванович"
+        />
+      </div>
+    </div>
+
+    <!-- Transliteration -->
+    <div class="form-row">
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'form.surname_translit' | translate }}
+          @if (isEdit && canEditName) {
+            *
+          }
+        </label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [formControl]="form.controls.surnameTranslit"
+          placeholder="Ivanov"
+        />
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'form.first_name_translit' | translate }}
+          @if (isEdit && canEditName) {
+            *
+          }
+        </label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [formControl]="form.controls.firstNameTranslit"
+          placeholder="Ivan"
+        />
+      </div>
+    </div>
+
+    <!-- Tax number + date of birth -->
+    <div class="form-row">
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'form.tax_number' | translate }}
+          @if (!isEdit) {
+            *
+          }
+        </label>
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.taxNumber.touched && form.controls.taxNumber.invalid
+          "
+          type="text"
+          [formControl]="form.controls.taxNumber"
+          [readonly]="isEdit"
+          mask="0000000000"
+          placeholder="0000000000"
+        />
+        @if (form.controls.taxNumber.touched && form.controls.taxNumber.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.taxNumber.errors | fieldError
+          }}</span>
+        }
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'form.date_of_birth' | translate }}
+          @if (!isEdit) {
+            *
+          }
+        </label>
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.dateOfBirth.touched && form.controls.dateOfBirth.invalid
+          "
+          type="date"
+          [formControl]="form.controls.dateOfBirth"
+        />
+        @if (
+          form.controls.dateOfBirth.touched && form.controls.dateOfBirth.invalid
+        ) {
+          <span class="e-form-group__error">{{
+            form.controls.dateOfBirth.errors | fieldError
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <div class="e-form-group">
+      <label class="e-form-group__label">{{
+        'spk.country_of_birth' | translate
+      }}</label>
+      <input
+        type="text"
+        class="e-form-group__input"
+        [formControl]="form.controls.countryOfBirthName"
+        placeholder="Україна"
+        maxlength="50"
+      />
+    </div>
+
+    <!-- Contacts -->
+    <div class="form-row">
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'form.phone' | translate }}
+          @if (!isEdit) {
+            *
+          }
+        </label>
+        <lib-phone-input
+          [formControl]="form.controls.phone"
+          [invalid]="form.controls.phone.touched && form.controls.phone.invalid"
+        />
+        @if (form.controls.phone.touched && form.controls.phone.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.phone.errors | fieldError
+          }}</span>
+        }
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'form.email' | translate }}
+          @if (!isEdit) {
+            *
+          }
+        </label>
+        <input
+          class="e-form-group__input"
+          [class.e-form-group__input--invalid]="
+            form.controls.email.touched && form.controls.email.invalid
+          "
+          type="email"
+          [formControl]="form.controls.email"
+          placeholder="example@email.com"
+        />
+        @if (form.controls.email.touched && form.controls.email.invalid) {
+          <span class="e-form-group__error">{{
+            form.controls.email.errors | fieldError
+          }}</span>
+        }
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div class="form-row">
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'driver.addr_town' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [formControl]="form.controls.addrTown"
+          maxlength="50"
+          placeholder="Київ"
+        />
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'driver.addr_street' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [formControl]="form.controls.addrStreet"
+          maxlength="50"
+          placeholder="вул. Хрещатик"
+        />
+      </div>
+    </div>
+
+    <div class="form-row form-row--3">
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'driver.addr_house' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [formControl]="form.controls.addrHouse"
+          maxlength="8"
+          placeholder="12"
+        />
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'driver.addr_flat' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [formControl]="form.controls.addrFlat"
+          maxlength="5"
+          placeholder="5"
+        />
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'driver.post_code' | translate
+        }}</label>
+        <input
+          class="e-form-group__input"
+          type="text"
+          [formControl]="form.controls.postCode"
+          maxlength="5"
+          placeholder="01001"
+        />
+      </div>
+    </div>
+
+    <h3 class="e-form-section__title">
+      {{ 'driver.license_section' | translate }}
+    </h3>
+
+    @if (isEdit && licenseUpdatedAt(); as updated) {
+      <p class="e-form-group__hint">
+        {{ 'driver.license_last_updated' | translate }}:
+        {{ updated | date: 'dd.MM.yyyy HH:mm' }}
+      </p>
+    }
+
+    @if (eligibility(); as el) {
+      <div class="mb-3">
+        @if (el.canEnrollPeriodic) {
+          <span
+            class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800"
+          >
+            Доступні: Періодичні курси
+          </span>
+        } @else if (el.canEnrollShortened) {
+          <span
+            class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800"
+          >
+            Доступні: Початково-скорочені курси
+          </span>
+        } @else if (el.canEnrollInitial) {
+          <span
+            class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800"
+          >
+            Доступні: Початкові курси
+          </span>
+        } @else {
+          <span
+            class="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800"
+            [title]="
+              el.reasons.initial ??
+              el.reasons.shortened ??
+              el.reasons.periodic ??
+              ''
+            "
+          >
+            Водій не підходить для жодного типу курсу
+          </span>
+          @if (
+            el.reasons.initial ?? el.reasons.shortened ?? el.reasons.periodic;
+            as r
+          ) {
+            <p class="text-xs text-red-700 mt-1">{{ r }}</p>
+          }
+        }
+      </div>
+    }
+
+    <div class="e-form-group">
+      <label class="e-form-group__label">
+        {{ 'driver.license_no' | translate }}
+      </label>
+      <input
+        class="e-form-group__input"
+        type="text"
+        [formControl]="form.controls.driverLicenseNo"
+        placeholder="ABC 123456"
+      />
+    </div>
+
+    <div class="e-form-group">
+      <label class="e-form-group__label">
+        {{ 'driver.license_categories' | translate }}
+        @if (requiresHeavyLicenseCategory()) {
+          <span class="text-danger">*</span>
+        }
+      </label>
+      <div class="flex flex-wrap gap-3 mt-2">
+        @for (cat of driverLicenseCategoryOptions; track cat) {
+          <lib-checkbox
+            [label]="cat"
+            [ngModel]="selectedDriverLicenseCategories().has(cat)"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="toggleDriverLicenseCategory(cat)"
+          />
+        }
+      </div>
+    </div>
+
+    <!-- License dates -->
+    <div class="form-row">
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'driver.license_issue_date' | translate }}
+          @if (courseType() === CourseType.PERIODIC) {
+            <span class="text-danger">*</span>
+          }
+        </label>
+        <input
+          class="e-form-group__input"
+          type="date"
+          [formControl]="form.controls.driverLicenseIssueDate"
+        />
+        @if (courseType() === CourseType.PERIODIC) {
+          <small class="text-muted">
+            Обов'язкова для періодичних курсів — перевіряється дата ≤2020-11-18
+          </small>
+        }
+      </div>
+
+      <div class="e-form-group">
+        <label class="e-form-group__label">
+          {{ 'driver.license_expiry_date' | translate }}
+        </label>
+        <input
+          class="e-form-group__input"
+          type="date"
+          [formControl]="form.controls.driverLicenseExpiryDate"
+        />
+        <small class="text-muted">
+          Якщо вказано — посвідчення повинно бути дійсним на сьогодні
+        </small>
+      </div>
+    </div>
+
+    <!-- Category open dates -->
+    <div class="form-row">
+      @if (hasCGroupSelected()) {
+        <div class="e-form-group">
+          <label class="e-form-group__label">
+            {{ 'driver.c_category_issue_date' | translate }}
+          </label>
+          <input
+            class="e-form-group__input"
+            type="date"
+            [formControl]="form.controls.cCategoryIssueDate"
+          />
+          @if (courseType() === CourseType.INITIAL_SHORTENED) {
+            <small class="text-muted">
+              Потрібна для C/CE на скорочених курсах (стаж ≥3 роки)
+            </small>
+          }
+        </div>
+      }
+
+      @if (hasDGroupSelected()) {
+        <div class="e-form-group">
+          <label class="e-form-group__label">
+            {{ 'driver.d_category_issue_date' | translate }}
+          </label>
+          <input
+            class="e-form-group__input"
+            type="date"
+            [formControl]="form.controls.dCategoryIssueDate"
+          />
+          @if (courseType() === CourseType.INITIAL_SHORTENED) {
+            <small class="text-muted">
+              Потрібна для D/DE на скорочених курсах (стаж ≥3 роки), якщо без наміру міського/приміського маршруту
+            </small>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="e-form-group">
+      <lib-checkbox
+        [label]="'driver.intends_urban_suburban_route' | translate"
+        [disabled]="!hasDGroupSelected()"
+        [ngModel]="form.controls.intendsUrbanSuburbanRoute.value"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="
+          form.controls.intendsUrbanSuburbanRoute.setValue($event)
+        "
+      />
+      @if (courseType() === CourseType.INITIAL_SHORTENED) {
+        <small class="text-muted block mt-1">
+          Дозволяє D/DE без 3-річного стажу
+        </small>
+      }
+    </div>
+
+    @if (isEdit && statusCode(); as code) {
+      <div class="e-form-group">
+        <label class="e-form-group__label">{{
+          'driver.status' | translate
+        }}</label>
+        <p class="driver-status-value">
+          {{ 'driver_status.' + code | translate }}
+        </p>
+      </div>
+    }
+
+    @if (error()) {
+      <p class="text-danger mg-b-10">{{ error() }}</p>
+    }
+
+    <lib-button type="submit" [loading]="saving()" [disabled]="form.invalid">
+      @if (isEdit) {
+        {{ 'action.save' | translate }}
+      } @else {
+        {{ 'action.create' | translate }}
+      }
+    </lib-button>
+  </form>
+}
